@@ -52,9 +52,13 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
     };
 
     return (
-        <div className={`fixed top-0 left-0 z-40 h-screen bg-sidebar text-sidebar-foreground w-64 border-r border-border transition-transform duration-300 ease-in-out transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 flex flex-col`}>
-            <div className="border-b p-[21.5px]">
-                <h1 className="text-3xl font-bold tracking-wider text-foreground">DASHBOARD</h1>
+        <div className={`fixed top-0 left-0 z-40 h-screen bg-sidebar text-sidebar-foreground w-64 transition-transform duration-300 ease-in-out transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 flex flex-col`}>
+            <div className=" p-[21.5px] flex items-center justify-center">
+                <div className="h-10 w-34 border-3 dark:border-white border-primary flex justify-center items-center gap-2 rounded-[100%]">
+                    <div className="w-3 h-3 rounded-full bg-[#22B14C]"></div>
+                    <div className="w-12 h-3 rounded-full border dark:border-white border-primary bg-[#FFF200]"></div>
+                    <div className="w-3 h-3 rounded-full bg-[#ED1C24]"></div>
+                </div>
             </div>
             <ScrollArea className="h-[calc(100vh-149px)]">
                 <nav className="flex-grow space-y-3 p-4">

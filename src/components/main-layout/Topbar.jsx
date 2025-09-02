@@ -22,7 +22,7 @@ const Topbar = ({ onMenuClick }) => {
     };
 
     return (
-        <header className="fixed top-0 right-0 left-0 flex items-center justify-between p-4 h-20 bg-card text-card-foreground border-b border-border lg:justify-end">
+        <header className="fixed top-0 right-0 left-0 flex items-center justify-between p-4 h-20 bg-card text-card-foreground lg:justify-end">
             <Button variant="ghost" size="icon" className="lg:hidden" onClick={onMenuClick}>
                 <Menu />
             </Button>
@@ -58,25 +58,25 @@ const Topbar = ({ onMenuClick }) => {
                         <Avatar className="h-10 w-10">
                             {/* Replace with actual user image */}
                             <AvatarImage src="https://github.com/shadcn.png" alt="User avatar" />
-                            <AvatarFallback>NH</AvatarFallback> {/* make a getInitials function */}
+                            <AvatarFallback>ER</AvatarFallback> {/* make a getInitials function */}
                         </Avatar>
-                        <span className="font-medium">Nurulla Hasan</span>
+                        <span className="font-medium">Emilioroo</span>
                     </Link>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Avatar className="h-10 w-10 lg:hidden">
                                 {/* Replace with actual user image */}
                                 <AvatarImage src="https://github.com/shadcn.png" alt="User avatar" />
-                                <AvatarFallback>NH</AvatarFallback>
+                                <AvatarFallback>ER</AvatarFallback>
                             </Avatar>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="max-w-64 mr-4">
                             <DropdownMenuLabel className="flex min-w-0 flex-col">
                                 <span className="text-foreground truncate text-sm font-medium">
-                                    Nurulla Hasan
+                                    Emilioroo
                                 </span>
                                 <span className="text-muted-foreground truncate text-xs font-normal">
-                                    user@gmail.com
+                                    emilioroo@gmail.com
                                 </span>
                             </DropdownMenuLabel>
                             <DropdownMenuSeparator />
