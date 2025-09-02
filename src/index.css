@@ -65,7 +65,7 @@
   --muted: oklch(0.967 0.001 286.375);
   --muted-foreground: oklch(0.552 0.016 285.938);
   
-  --accent: oklch(94.912% 0.00011 271.152);
+  --accent: oklch(91.279% 0.0001 271.152);
   --accent-foreground: oklch(0.21 0.006 285.885);
   
   --destructive: oklch(0.577 0.245 27.325);
@@ -142,6 +142,13 @@
     font-family: "TASA Explorer", sans-serif;
     @apply bg-background text-foreground;
   }
+}
+
+/* Remove scrollbar */
+::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 /* Fade slide */

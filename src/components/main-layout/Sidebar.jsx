@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 import {
@@ -8,20 +7,28 @@ import {
     UserRoundPen,
     BadgeInfo,
     ReceiptText,
-    GlobeLock
+    GlobeLock,
+    Handshake
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useDispatch } from "react-redux";
 import { setAccessToken, setUser } from "@/redux/feature/auth/authSlice";
+import { Button } from "../ui/button";
 
 
 const navItems = [
     { name: "Dashboard", icon: LayoutGrid, href: "/" },
-    { name: "User", icon: Users, href: "/users" },
-    { name: "Order", icon: ListOrdered, href: "/orders" },
-    { name: "Payment", icon: CircleDollarSign, href: "/payments" },
+    { name: "Add Skills", icon: ListOrdered, href: "/skills" },
+    { name: "Add Audio Topics", icon: CircleDollarSign, href: "/audio-topic" },
+    { name: "Report Management", icon: CircleDollarSign, href: "/report" },
+    { name: "Make Admin", icon: CircleDollarSign, href: "/make-admin" },
+];
+
+const userManagementSubItems = [
+    { name: "All Users", icon: Users, href: "/users" },
+    { name: "All Donors", icon: Handshake, href: "/donors" },
 ];
 
 const settingsSubItems = [
@@ -29,13 +36,16 @@ const settingsSubItems = [
     { name: "About Us", icon: BadgeInfo, href: "/settings/about" },
     { name: "Terms & Condition", icon: ReceiptText, href: "/settings/terms" },
     { name: "Privacy Policy", icon: GlobeLock, href: "/settings/privacy" },
+    { name: "Contact Us", icon: GlobeLock, href: "/contact-us" },
 ];
 
 const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
     const dispatch = useDispatch();
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const [isUserManagementOpen, setIsUserManagementOpen] = useState(false);
     const location = useLocation();
     const isSettingsPath = location.pathname.startsWith('/settings');
+    const isUserManagementPath = location.pathname.startsWith('/users') || location.pathname.startsWith('/donors');
     const prevLocation = useRef(location);
 
     useEffect(() => {
@@ -62,7 +72,60 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
             </div>
             <ScrollArea className="h-[calc(100vh-149px)]">
                 <nav className="flex-grow space-y-3 p-4">
-                    {navItems.map((item) => (
+                    {/* Dashboard NavLink */}
+                    <NavLink key={navItems[0].name} to={navItems[0].href} end className={({ isActive }) =>
+                        `w-full flex items-center justify-start p-2 rounded-sm text-sm font-medium transition-colors duration-200 border 
+                    ${isActive ? "bg-primary text-primary-foreground" : "hover:bg-accent hover:text-accent-foreground bg-black/5 dark:bg-white/5"
+                        }`
+                    } onClick={() => setIsSidebarOpen(false)}>
+                        {navItems[0].name}
+                    </NavLink>
+
+                    {/* User Management Collapsible */}
+                    <Collapsible defaultOpen={isUserManagementPath}>
+                        <CollapsibleTrigger onClick={() => setIsUserManagementOpen(!isUserManagementOpen)} className={`w-full flex items-center justify-between p-2 rounded-sm text-base font-medium cursor-pointer transition-colors duration-200 border 
+                    ${isUserManagementPath ? "bg-primary text-primary-foreground" : "hover:bg-accent hover:text-accent-foreground bg-black/5 dark:bg-white/5"
+                        }`}>
+                            <div className="flex items-center text-sm ">
+                                <Users className="mr-2 h-4 w-4" />
+                                User Management
+                            </div>
+                            <ChevronDown className={`h-4 w-4 transition-transform duration-300 ${isUserManagementOpen ? "-rotate-180" : ""}`} />
+
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="py-2 space-y-2">
+                            {userManagementSubItems.map((item, index) => (
+                                <NavLink
+                                    key={item.name}
+                                    to={item.href}
+                                    style={{ animationDelay: `${index * 50}ms`, animationFillMode: 'both' }}
+                                    className={({ isActive }) =>
+                                        `animate-fade-in-up w-[90%] ml-5 flex items-center justify-start p-2 rounded-sm text-sm font-medium transition-colors duration-200 border 
+                                ${isActive ? "bg-primary text-primary-foreground" : "hover:bg-accent hover:text-accent-foreground bg-black/5 dark:bg-white/5"}`
+                                    }
+                                    onClick={() => setIsSidebarOpen(false)}
+                                >
+                                    <item.icon className="mr-2 w-4 h-4" />
+                                    {item.name}
+                                </NavLink>
+                            ))}
+                        </CollapsibleContent>
+                    </Collapsible>
+
+                    {/* Remaining NavItems (Order, Payment) */}
+                    {navItems.slice(1).map((item) => (
+                        <NavLink key={item.name} to={item.href} end className={({ isActive }) =>
+                            `w-full flex items-center justify-start p-2 rounded-sm text-sm font-medium transition-colors duration-200 border 
+                    ${isActive ? "bg-primary text-primary-foreground" : "hover:bg-accent hover:text-accent-foreground bg-black/5 dark:bg-white/5"
+                            }`
+                        } onClick={() => setIsSidebarOpen(false)}>
+                            <item.icon className="mr-2 w-4 h-4" />
+                            {item.name}
+                        </NavLink>
+                    ))}
+
+                    {/* Remaining NavItems (Order, Payment) */}
+                    {navItems.slice(1).map((item) => (
                         <NavLink key={item.name} to={item.href} end className={({ isActive }) =>
                             `w-full flex items-center justify-start p-2 rounded-sm text-sm font-medium transition-colors duration-200 border 
                     ${isActive ? "bg-primary text-primary-foreground" : "hover:bg-accent hover:text-accent-foreground bg-black/5 dark:bg-white/5"
@@ -81,7 +144,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                                 <Settings className="mr-2 h-4 w-4" />
                                 Settings
                             </div>
-                            <ChevronDown className={`h-4 w-4 transition-transform duration-300 ${isSettingsOpen ? "-rotate-180" : ""}`} />
+                            <ChevronDown className={`h-4 w-4 transition-transform duration-300 ${!isSettingsOpen ? "-rotate-180" : ""}`} />
 
                         </CollapsibleTrigger>
                         <CollapsibleContent className="py-2 space-y-2">

@@ -11,7 +11,7 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>
       <ThemeProvider defaultTheme='light' storageKey='theme'>
-        <RouterProvider router={router} />
+          <RouterProvider router={router} />
       </ThemeProvider>
     </Provider>
   </StrictMode>,
