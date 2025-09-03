@@ -1,36 +1,35 @@
 import { Suspense } from "react";
 import Title from "@/components/ui/Title";
 import { Input } from "@/components/ui/input";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Eye, Ban, Search } from "lucide-react";
-import { users } from "@/data/data";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
 import CustomPagination from "@/components/common/CustomPagination";
 import { useState } from "react";
 import PageLayout from "@/components/main-layout/PageLayout";
+import { useGetAllUserQuery } from "@/redux/feature/user/userApi";
+import UsersTable from "@/components/users/table/UsersTable";
+import TableSkeleton from "@/components/skeleton/TableSkeleton";
+import { Search } from "lucide-react";
+import useDebounce from "@/hooks/usedebounce";
 
 const Users = () => {
-    // const [searchTerm, setSearchTerm] = useState("");
+    const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    // const [pageSize] = useState(12);
+    const [limit] = useState(10);
 
-    const totalPages = 2;
+    const debouncedSearch = useDebounce(searchTerm, 400);
+    const { data, isLoading } = useGetAllUserQuery({
+        page: currentPage,
+        limit,
+        searchTerm: debouncedSearch,
+    });
+
+
+    const users = data?.data?.result || [];
+    const totalPages = data?.data?.meta?.totalPage || 1;
 
     return (
         <Suspense
             fallback={
-                <div className="flex items-center justify-center h-64">
-                    Loading Users...
-                </div>
+                <TableSkeleton columns={6} rows={10} />
             }
         >
             <PageLayout
@@ -54,50 +53,17 @@ const Users = () => {
                         <Input
                             placeholder="Search users..."
                             className="pl-10 w-full md:w-64"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </div>
                 </div>
                 {/* Table */}
-                <ScrollArea className="w-[calc(100vw-32px)] md:w-full rounded-lg overflow-hidden whitespace-nowrap">
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>S.No</TableHead>
-                                {/* <TableHead>Image</TableHead> */}
-                                <TableHead>Name</TableHead>
-                                <TableHead>Email</TableHead>
-                                <TableHead>Contact Number</TableHead>
-                                <TableHead>Location</TableHead>
-                                <TableHead className="text-right">Action</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {users.map((user, index) => (
-                                <TableRow key={user.email}>
-                                    <TableCell>{index + 1}</TableCell>
-                                    {/* <TableCell>
-                                        <Avatar>
-                                            <AvatarImage src={user.image} alt={user.name} />
-                                            <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                                        </Avatar>
-                                    </TableCell> */}
-                                    <TableCell className="font-medium">{user.name}</TableCell>
-                                    <TableCell>{user.email}</TableCell>
-                                    <TableCell>{user.contact}</TableCell>
-                                    <TableCell>{user.location}</TableCell>
-                                    <TableCell className="text-right space-x-2">
-                                        <Button variant="outline" size="icon">
-                                            <Eye className="h-5 w-5" />
-                                        </Button>
-                                        <Button variant="outline" size="icon" className="text-red-500">
-                                            <Ban className="h-5 w-5" />
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </ScrollArea>
+                {isLoading ? (
+                    <TableSkeleton columns={6} rows={10} />
+                ) : (
+                    <UsersTable users={users} />
+                )}
             </PageLayout>
         </Suspense>
     );
