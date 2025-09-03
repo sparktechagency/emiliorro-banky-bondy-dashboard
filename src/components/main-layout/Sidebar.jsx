@@ -20,8 +20,8 @@ import { Button } from "../ui/button";
 
 const navItems = [
     { name: "Dashboard", icon: LayoutGrid, href: "/" },
-    { name: "Add Skills", icon: ListOrdered, href: "/skills" },
-    { name: "Add Audio Topics", icon: CircleDollarSign, href: "/audio-topic" },
+    { name: "Skills Management", icon: ListOrdered, href: "/skills" },
+    { name: "Audio Topics Management", icon: CircleDollarSign, href: "/audio-topic" },
     { name: "Report Management", icon: CircleDollarSign, href: "/report" },
     { name: "Make Admin", icon: CircleDollarSign, href: "/make-admin" },
 ];

@@ -1,28 +1,30 @@
 import { Suspense } from "react";
 import Title from "@/components/ui/Title";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Plus, SquarePen, Trash } from "lucide-react";
-import { skills } from "@/data/data";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { Plus } from "lucide-react";
 import CustomPagination from "@/components/common/CustomPagination";
 import { useState } from "react";
 import PageLayout from "@/components/main-layout/PageLayout";
+import { useGetAllSkillQuery } from "@/redux/feature/skill/skillApi";
+import useDebounce from "@/hooks/usedebounce";
+import SkillTable from "@/components/skill/table/SkillTable";
+import TableSkeleton from "@/components/skeleton/TableSkeleton";
 
 const Skills = () => {
-    // const [searchTerm, setSearchTerm] = useState("");
-    const [currentPage, setCurrentPage] = useState(1);
-    // const [pageSize] = useState(12);
-
-    const totalPages = 2;
+    const [searchTerm, setSearchTerm] = useState("");
+        const [currentPage, setCurrentPage] = useState(1);
+        const [limit] = useState(10);
+    
+        const debouncedSearch = useDebounce(searchTerm, 400);
+        const { data, isLoading } = useGetAllSkillQuery({
+            page: currentPage,
+            limit,
+            searchTerm: debouncedSearch,
+        });
+    
+    
+        const skills = data?.data?.result || [];
+        const totalPages = data?.data?.meta?.totalPage || 1;
 
     return (
         <Suspense
@@ -56,33 +58,13 @@ const Skills = () => {
                     </div>
                 </div>
                 {/* Table */}
-                <ScrollArea className="w-[calc(100vw-32px)] md:w-full rounded-lg overflow-hidden whitespace-nowrap">
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>S.No</TableHead>
-                                <TableHead>Category name</TableHead>
-                                <TableHead className="text-right">Action</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {skills.map((skill, index) => (
-                                <TableRow key={skill._id}>
-                                    <TableCell>{index + 1}</TableCell>
-                                    <TableCell>{skill.category_name}</TableCell>
-                                    <TableCell className="text-right space-x-2">
-                                        <Button variant="outline" size="icon">
-                                            <SquarePen className="h-5 w-5" />
-                                        </Button>
-                                        <Button variant="outline" size="icon" className="text-red-500">
-                                            <Trash className="h-5 w-5" />
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </ScrollArea>
+                {
+                    isLoading ? (
+                        <TableSkeleton />
+                    ) : (
+                        <SkillTable skills={skills} />
+                    )
+                }
             </PageLayout>
         </Suspense>
     );

@@ -2,7 +2,8 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { setAccessToken, setAdmin } from './auth/authSlice'
 
 const rawBaseQuery = fetchBaseQuery({
-    baseUrl: 'http://10.10.20.9:4000',
+    // baseUrl: 'http://10.10.20.9:4000',
+    baseUrl: 'http://192.168.0.103:4000',
     prepareHeaders: (headers, { getState }) => {
         const token = getState()?.auth.accessToken;
 
