@@ -7,7 +7,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useResetPasswordMutation } from "@/redux/feature/auth/authApi";
 
 const resetPasswordSchema = z.object({
     newPassword: z.string().min(6, { message: "New password must be at least 6 characters." }),
@@ -22,7 +23,8 @@ const ResetPassword = () => {
     const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
     const toggleNewPasswordVisibility = () => setShowNewPassword(!showNewPassword);
     const toggleConfirmNewPasswordVisibility = () => setShowConfirmNewPassword(!showConfirmNewPassword);
-    const navigate = useNavigate();
+
+    const [resetPassword, {isLoading}] = useResetPasswordMutation();
 
     const {
         register,
@@ -33,9 +35,15 @@ const ResetPassword = () => {
         mode: "onChange",
     });
 
+    const FPE = typeof window !== "undefined" ? localStorage.getItem("FPE") : null;
     const onSubmit = (data) => {
         console.log(data);
-        navigate("/");
+        resetPassword(
+            {
+                email: FPE,
+                password: data.newPassword,
+                confirmPassword: data.confirmNewPassword
+            })
     };
 
     return (
@@ -96,7 +104,7 @@ const ResetPassword = () => {
                                 )}
                             </div>
 
-                            <Button type="submit" className="w-full">
+                            <Button loading={isLoading} type="submit" className="w-full">
                                 Reset Password
                             </Button>
                         </div>

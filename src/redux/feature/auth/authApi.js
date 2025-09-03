@@ -28,11 +28,30 @@ const authApi = baseApi.injectEndpoints({
         // UPDATE ADMIN PROFILE
         updateAdminProfile: builder.mutation({
             query: (data) => ({
-                url: "/normal-user/update-profile",
+                url: "/super-admin/update-profile",
                 method: "PATCH",
                 body: data,
             }),
             invalidatesTags: ["PROFILE"],
+        }),
+
+        // CHANGE PASSWORD
+        changePassword: builder.mutation({
+            query: (data) => {
+                return {
+                    url: "/auth/change-password",
+                    method: 'POST',
+                    body: data
+                }
+            },
+            async onQueryStarted(arg, { queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled;
+                    SuccessToast(data?.message);
+                } catch (error) {
+                    ErrorToast(error?.error?.data?.message || "Failed to change password.");
+                }
+            },
         }),
 
         // Login Endpoint (Mutation) 
@@ -53,29 +72,12 @@ const authApi = baseApi.injectEndpoints({
                         }
                         SuccessToast("Login successful!");
                         window.location.href = "/";
-                      } else {
+                    } else {
                         ErrorToast("You are not authorized to login.");
                         return;
-                      }
+                    }
                 } catch (error) {
                     ErrorToast(error?.error?.data?.message || "Login failed.");
-                }
-            },
-        }),
-
-        // RESEND OTP
-        resendOTP: builder.mutation({
-            query: (email) => ({
-                url: '/user/resend-verify-code',
-                method: 'POST',
-                body: { email }
-            }),
-            async onQueryStarted(arg, { queryFulfilled }) {
-                try {
-                    await queryFulfilled;
-                    SuccessToast("New OTP sent to your email!");
-                } catch (error) {
-                    ErrorToast(error?.error?.data?.message || "Failed to send new OTP.");
                 }
             },
         }),
@@ -86,18 +88,16 @@ const authApi = baseApi.injectEndpoints({
                 return {
                     url: '/auth/forget-password',
                     method: 'POST',
-                    body: { email }
+                    body: email
                 }
-            }
-        }),
-
-        // RESET PASSWORD
-        resetPassword: builder.mutation({
-            query: (data) => {
-                return {
-                    url: '/auth/reset-password',
-                    method: 'POST',
-                    body: data,
+            },
+            async onQueryStarted({ email }, { queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled;
+                    localStorage.setItem("FPE", email);
+                    SuccessToast(data?.message);
+                } catch (error) {
+                    ErrorToast(error?.error?.data?.message || "Failed to send new OTP.");
                 }
             }
         }),
@@ -111,8 +111,8 @@ const authApi = baseApi.injectEndpoints({
             }),
             async onQueryStarted(arg, { queryFulfilled }) {
                 try {
-                    await queryFulfilled;
-                    SuccessToast("OTP verification successful!");
+                    const { data } = await queryFulfilled;
+                    SuccessToast(data?.message);
                 } catch (error) {
                     ErrorToast(error?.error?.data?.message || "OTP verification failed.");
                 }
@@ -124,37 +124,38 @@ const authApi = baseApi.injectEndpoints({
             query: (email) => ({
                 url: '/auth/resend-reset-code',
                 method: 'POST',
-                body: { email }
+                body: email
             }),
             async onQueryStarted(arg, { queryFulfilled }) {
                 try {
-                    await queryFulfilled;
-                    SuccessToast("New OTP sent to your email!");
+                    const { data } = await queryFulfilled;
+                    SuccessToast(data?.message);
                 } catch (error) {
                     ErrorToast(error?.error?.data?.message || "Failed to send new OTP.");
                 }
             },
         }),
 
-        // CHANGE PASSWORD
-        changePassword: builder.mutation({
+        // RESET PASSWORD
+        resetPassword: builder.mutation({
             query: (data) => {
                 return {
-                    url: "/auth/change-password",
+                    url: '/auth/reset-password',
                     method: 'POST',
-                    body: data
+                    body: data,
                 }
             },
             async onQueryStarted(arg, { queryFulfilled }) {
                 try {
-                    await queryFulfilled;
-                    SuccessToast("Password changed successfully!");
+                    const { data } = await queryFulfilled;
+                    SuccessToast(data?.message);
+                    localStorage.removeItem("FPE");
+                    window.location.href = "/auth/login";
                 } catch (error) {
-                    ErrorToast(error?.error?.data?.message || "Failed to change password.");
+                    ErrorToast(error?.error?.data?.message || "Failed to reset password.");
                 }
-            },
+            }
         }),
-
 
     })
 })
@@ -163,10 +164,9 @@ export const {
     useGetAdminProfileQuery,
     useUpdateAdminProfileMutation,
     useLoginMutation,
-    useResendOTPMutation,
-    useResendResetOTPMutation,
     useForgetPasswordMutation,
-    useResetPasswordMutation,
     useVerifyOTPForResetPasswordMutation,
-    useChangePasswordMutation,
+    useResendResetOTPMutation,
+    useResetPasswordMutation,
+    useChangePasswordMutation
 } = authApi;

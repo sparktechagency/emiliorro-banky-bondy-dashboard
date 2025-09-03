@@ -7,6 +7,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { useForgetPasswordMutation } from "@/redux/feature/auth/authApi";
+import { useEffect } from "react";
 
 const forgotPasswordSchema = z.object({
     email: z.string().email({ message: "Invalid email address." }),
@@ -23,9 +25,17 @@ const ForgetPassword = () => {
         mode: "onChange",
     });
 
+    const [forgetPassword, { isSuccess, isLoading }] = useForgetPasswordMutation()
+    
+    useEffect(() => {
+        if (isSuccess) {
+            navigate("/auth/verify-otp")
+        }
+    }, [isSuccess, navigate])
+
+
     const onSubmit = (data) => {
-        console.log(data);
-        navigate("/auth/verify-otp");
+        forgetPassword(data)
     };
 
     return (
@@ -55,7 +65,7 @@ const ForgetPassword = () => {
                                 )}
                             </div>
 
-                            <Button type="submit" className="w-full">
+                            <Button loading={isLoading} type="submit" className="w-full">
                                 Get Code
                             </Button>
                         </div>

@@ -21,7 +21,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 const Topbar = ({ onMenuClick }) => {
     const { setTheme, theme } = useTheme();
     const admin = useSelector((state) => state.auth.admin);
-    console.log("this data from get admin profile api", admin);
     const { isLoading } = useGetAdminProfileQuery();
 
     const handleLogout = () => {
@@ -68,10 +67,9 @@ const Topbar = ({ onMenuClick }) => {
                         {isLoading ? (
                             // Skeleton for avatar + name while loading
                             <>
-                                <Skeleton className="h-10 w-10 rounded-full bg-muted animate-pulse" />
+                                <Skeleton className="h-10 w-10 rounded-full" />
                                 <div className="flex flex-col gap-1">
-                                    <Skeleton className="h-4 w-28 bg-muted rounded animate-pulse" />
-                                    {/* <Skeleton className="h-3 w-40 bg-muted rounded animate-pulse" /> */}
+                                    <Skeleton className="h-4 w-28 rounded-sm" />
                                 </div>
                             </>
                         ) : (
@@ -91,7 +89,7 @@ const Topbar = ({ onMenuClick }) => {
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             {isLoading ? (
-                                <div className="h-10 w-10 rounded-full bg-muted animate-pulse lg:hidden" />
+                                <Skeleton className="h-10 w-10 rounded-full lg:hidden" />
                             ) : (
                                 <Avatar className="h-10 w-10 lg:hidden">
                                     <AvatarImage src={admin?.profile_image} alt={admin?.name || "User avatar"} />
@@ -102,8 +100,8 @@ const Topbar = ({ onMenuClick }) => {
                         <DropdownMenuContent className="max-w-64 mr-4">
                             {isLoading ? (
                                 <div className="p-2 min-w-[200px]">
-                                    <div className="h-4 w-28 bg-muted rounded animate-pulse mb-2" />
-                                    <div className="h-3 w-40 bg-muted rounded animate-pulse" />
+                                    <Skeleton className="h-4 w-28 rounded mb-2" />
+                                    <Skeleton className="h-3 w-40 rounded" />
                                 </div>
                             ) : (
                                 <DropdownMenuLabel className="flex min-w-0 flex-col">

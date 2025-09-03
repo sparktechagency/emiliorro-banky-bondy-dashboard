@@ -5,7 +5,10 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { ArrowLeft } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useResendResetOTPMutation, useVerifyOTPForResetPasswordMutation } from "@/redux/feature/auth/authApi";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const verificationSchema = z.object({
     code: z.string().min(6, {
@@ -27,14 +30,43 @@ const VerifyOtp = () => {
         },
     });
 
+    const [verifyOTPForResetPassword, { isLoading, isSuccess }] = useVerifyOTPForResetPasswordMutation();
+    const [resendResetOTP, { isLoading: isResendLoading, isSuccess: isResendSuccess }] = useResendResetOTPMutation();
+
+    const [cooldown, setCooldown] = useState(0);
+
+    const FPE = typeof window !== "undefined" ? localStorage.getItem("FPE") : null;
     const onSubmit = (data) => {
-        console.log(data);
-        navigate("/auth/reset-password");
+        const OTP = Number(data.code);
+        verifyOTPForResetPassword({ resetCode: OTP, email: FPE })
     };
 
     const handleResendOTP = () => {
-        console.log("Resending OTP...");
+        if (cooldown > 0) return;
+        resendResetOTP({ email: FPE });
     };
+
+    useEffect(() => {
+        if (isSuccess) {
+            navigate("/auth/reset-password");
+        }
+    }, [isSuccess, navigate]);
+
+    useEffect(() => {
+        setCooldown(60);
+    }, []);
+
+    useEffect(() => {
+        if (isResendSuccess) {
+            setCooldown(60);
+        }
+    }, [isResendSuccess]);
+
+    useEffect(() => {
+        if (cooldown <= 0) return;
+        const timer = setInterval(() => setCooldown((s) => s - 1), 1000);
+        return () => clearInterval(timer);
+    }, [cooldown]);
 
     return (
         <div className="w-full max-w-sm md:max-w-lg">
@@ -87,12 +119,15 @@ const VerifyOtp = () => {
                                     variant="link"
                                     onClick={handleResendOTP}
                                     className="p-0 h-auto"
+                                    disabled={isResendLoading || cooldown > 0}
+                                    aria-disabled={isResendLoading || cooldown > 0}
+                                    title={cooldown > 0 ? `Please wait ${cooldown}s` : "Resend Code"}
                                 >
-                                    Resend Code
+                                    {cooldown > 0 ? `Resend in ${cooldown}s` : "Resend Code"}
                                 </Button>
                             </div>
 
-                            <Button type="submit" className="w-full">
+                            <Button loading={isLoading} type="submit" className="w-full">
                                 Verify
                             </Button>
                         </div>
