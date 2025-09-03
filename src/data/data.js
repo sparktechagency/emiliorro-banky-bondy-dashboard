@@ -86,7 +86,6 @@ export const users = [
     // },
 ];
 
-
 export const skills = [
     { "_id": "64f4c9e2b7a1d9a3f8c10001", "category_name": "Artist" },
     { "_id": "64f4c9e2b7a1d9a3f8c10002", "category_name": "Musician" },
