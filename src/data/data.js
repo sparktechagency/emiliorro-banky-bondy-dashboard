@@ -115,4 +115,224 @@ export const audioTopic = [
     { "_id": "64f4d1e2b7a1d9a3f8c20010", "topic_name": "Science" },
     // { "_id": "64f4d1e2b7a1d9a3f8c20011", "topic_name": "History" },
     // { "_id": "64f4d1e2b7a1d9a3f8c20012", "topic_name": "Psychology" }
-  ]
+]
+
+
+export const userReports = [
+    {
+        report_by: "Ayesha",
+        report_against: "Rafi",
+        report_type: "Spam",
+        report_message: "This user is spamming the platform.",
+        report_date: "2024-01-01T00:00:00.000Z"
+    },
+    {
+        report_by: "Tania",
+        report_against: "Fahim",
+        report_type: "Harassment",
+        report_message: "User is sending threatening messages.",
+        report_date: "2024-01-02T00:00:00.000Z"
+    },
+    {
+        report_by: "Nabila",
+        report_against: "Imran",
+        report_type: "Inappropriate Content",
+        report_message: "Profile contains offensive images.",
+        report_date: "2024-01-03T00:00:00.000Z"
+    },
+    {
+        report_by: "Sadia",
+        report_against: "Tanvir",
+        report_type: "Spam",
+        report_message: "Repeated promotional messages in comments.",
+        report_date: "2024-01-04T00:00:00.000Z"
+    },
+    {
+        report_by: "Mehedi",
+        report_against: "Rumi",
+        report_type: "Harassment",
+        report_message: "Targeted bullying in group chats.",
+        report_date: "2024-01-05T00:00:00.000Z"
+    },
+    {
+        report_by: "Farzana",
+        report_against: "Shuvo",
+        report_type: "Fake Profile",
+        report_message: "Pretending to be someone else.",
+        report_date: "2024-01-06T00:00:00.000Z"
+    },
+    {
+        report_by: "Raisa",
+        report_against: "Nayeem",
+        report_type: "Inappropriate Content",
+        report_message: "Sharing explicit material.",
+        report_date: "2024-01-07T00:00:00.000Z"
+    },
+    {
+        report_by: "Jannat",
+        report_against: "Omar",
+        report_type: "Spam",
+        report_message: "Flooding inbox with irrelevant links.",
+        report_date: "2024-01-08T00:00:00.000Z"
+    },
+    {
+        report_by: "Hasib",
+        report_against: "Mithila",
+        report_type: "Harassment",
+        report_message: "Making derogatory remarks publicly.",
+        report_date: "2024-01-09T00:00:00.000Z"
+    },
+    {
+        report_by: "Nafis",
+        report_against: "Lamia",
+        report_type: "Fake Profile",
+        report_message: "Using celebrity photos and fake name.",
+        report_date: "2024-01-10T00:00:00.000Z"
+    }
+]
+
+export const mediaReports = [
+    {
+        report_by: "Ayesha",
+        report_against: "User_Report_2025_02_27_01.mp3",
+        report_type: "Spam",
+        report_message: "This audio file contains repetitive promotional content.",
+        report_date: "2025-02-27T10:00:00.000Z"
+    },
+    {
+        report_by: "Rafi",
+        report_against: "User_Report_2025_02_27_01.mp3",
+        report_type: "Harassment",
+        report_message: "The audio includes targeted verbal abuse.",
+        report_date: "2025-02-27T10:05:00.000Z"
+    },
+    {
+        report_by: "Tania",
+        report_against: "User_Report_2025_02_27_01.mp3",
+        report_type: "Inappropriate Content",
+        report_message: "Contains offensive language not suitable for public sharing.",
+        report_date: "2025-02-27T10:10:00.000Z"
+    },
+    {
+        report_by: "Fahim",
+        report_against: "User_Report_2025_02_27_01.mp3",
+        report_type: "Spam",
+        report_message: "Repeated attempts to advertise unrelated services.",
+        report_date: "2025-02-27T10:15:00.000Z"
+    },
+    {
+        report_by: "Nabila",
+        report_against: "User_Report_2025_02_27_01.mp3",
+        report_type: "Harassment",
+        report_message: "Aggressive tone targeting specific individuals.",
+        report_date: "2025-02-27T10:20:00.000Z"
+    },
+    {
+        report_by: "Imran",
+        report_against: "User_Report_2025_02_27_01.mp3",
+        report_type: "Fake Media",
+        report_message: "Audio appears to be manipulated or misleading.",
+        report_date: "2025-02-27T10:25:00.000Z"
+    },
+    {
+        report_by: "Sadia",
+        report_against: "User_Report_2025_02_27_01.mp3",
+        report_type: "Inappropriate Content",
+        report_message: "Contains explicit material without warning.",
+        report_date: "2025-02-27T10:30:00.000Z"
+    },
+    {
+        report_by: "Tanvir",
+        report_against: "User_Report_2025_02_27_01.mp3",
+        report_type: "Spam",
+        report_message: "Audio is used to promote unrelated products.",
+        report_date: "2025-02-27T10:35:00.000Z"
+    },
+    {
+        report_by: "Mehedi",
+        report_against: "User_Report_2025_02_27_01.mp3",
+        report_type: "Harassment",
+        report_message: "Verbal threats directed at community members.",
+        report_date: "2025-02-27T10:40:00.000Z"
+    },
+    {
+        report_by: "Farzana",
+        report_against: "User_Report_2025_02_27_01.mp3",
+        report_type: "Fake Media",
+        report_message: "Audio claims false information about platform policies.",
+        report_date: "2025-02-27T10:45:00.000Z"
+    }
+]
+
+export const aiReports = [
+    {
+        "_id": "64f6b1e2b7a1d9a3f8c40001",
+        "report_against": "User_Report_2025_02_27_01.mp3",
+        "report_type": "Spam",
+        "report_message": "This file is flooding the feed with irrelevant audio.",
+        "report_date": "2025-02-27T11:00:00.000Z"
+    },
+    {
+        "_id": "64f6b1e2b7a1d9a3f8c40002",
+        "report_against": "User_Report_2025_02_27_01.mp3",
+        "report_type": "Harassment",
+        "report_message": "Contains aggressive and abusive speech.",
+        "report_date": "2025-02-27T11:05:00.000Z"
+    },
+    {
+        "_id": "64f6b1e2b7a1d9a3f8c40003",
+        "report_against": "User_Report_2025_02_27_01.mp3",
+        "report_type": "Harassment",
+        "report_message": "Repeated verbal attacks targeting individuals.",
+        "report_date": "2025-02-27T11:10:00.000Z"
+    },
+    {
+        "_id": "64f6b1e2b7a1d9a3f8c40004",
+        "report_against": "User_Report_2025_02_27_01.mp3",
+        "report_type": "Harassment",
+        "report_message": "Audio includes threats and intimidation.",
+        "report_date": "2025-02-27T11:15:00.000Z"
+    },
+    {
+        "_id": "64f6b1e2b7a1d9a3f8c40005",
+        "report_against": "User_Report_2025_02_27_01.mp3",
+        "report_type": "Harassment",
+        "report_message": "Highly offensive language used throughout.",
+        "report_date": "2025-02-27T11:20:00.000Z"
+    },
+    {
+        "_id": "64f6b1e2b7a1d9a3f8c40006",
+        "report_against": "User_Report_2025_02_27_01.mp3",
+        "report_type": "Harassment",
+        "report_message": "Targeted hate speech detected.",
+        "report_date": "2025-02-27T11:25:00.000Z"
+    },
+    {
+        "_id": "64f6b1e2b7a1d9a3f8c40007",
+        "report_against": "User_Report_2025_02_27_01.mp3",
+        "report_type": "Harassment",
+        "report_message": "Audio promotes bullying behavior.",
+        "report_date": "2025-02-27T11:30:00.000Z"
+    },
+    {
+        "_id": "64f6b1e2b7a1d9a3f8c40008",
+        "report_against": "User_Report_2025_02_27_01.mp3",
+        "report_type": "Harassment",
+        "report_message": "Insults and slurs used repeatedly.",
+        "report_date": "2025-02-27T11:35:00.000Z"
+    },
+    {
+        "_id": "64f6b1e2b7a1d9a3f8c40009",
+        "report_against": "User_Report_2025_02_27_01.mp3",
+        "report_type": "Harassment",
+        "report_message": "Audio violates community safety standards.",
+        "report_date": "2025-02-27T11:40:00.000Z"
+    },
+    {
+        "_id": "64f6b1e2b7a1d9a3f8c40010",
+        "report_against": "User_Report_2025_02_27_01.mp3",
+        "report_type": "Harassment",
+        "report_message": "Repeated harassment across multiple segments.",
+        "report_date": "2025-02-27T11:45:00.000Z"
+    }
+]
