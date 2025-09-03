@@ -5,17 +5,24 @@ import { Toggle } from "@/components/ui/toggle";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
-DropdownMenu,
-DropdownMenuContent,
-DropdownMenuGroup,
-DropdownMenuItem,
-DropdownMenuLabel,
-DropdownMenuSeparator,
-DropdownMenuTrigger
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
+import { useSelector } from "react-redux";
+import { useGetAdminProfileQuery } from "@/redux/feature/auth/authApi";
+import { getInitials } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Topbar = ({ onMenuClick }) => {
     const { setTheme, theme } = useTheme();
+    const admin = useSelector((state) => state.auth.admin);
+    console.log("this data from get admin profile api", admin);
+    const { isLoading } = useGetAdminProfileQuery();
 
     const handleLogout = () => {
         window.location.href = 'auth/login';
@@ -34,6 +41,7 @@ const Topbar = ({ onMenuClick }) => {
                     </span>
                     <Bell />
                 </Link>
+                {/* Theme Toggle */}
                 <Toggle
                     variant="outline"
                     className="group rounded-full hidden lg:flex"
@@ -53,32 +61,60 @@ const Topbar = ({ onMenuClick }) => {
                     />
                 </Toggle>
 
-                <div className="flex items-center ">
+                {/* User Profile */}
+                <div className="flex items-center">
+                    {/* Desktop profile (link) */}
                     <Link to="/settings/profile" className="lg:flex items-center gap-3 hidden">
-                        <Avatar className="h-10 w-10">
-                            {/* Replace with actual user image */}
-                            <AvatarImage src="https://github.com/shadcn.png" alt="User avatar" />
-                            <AvatarFallback>ER</AvatarFallback> {/* make a getInitials function */}
-                        </Avatar>
-                        <span className="font-medium">Emilioroo</span>
+                        {isLoading ? (
+                            // Skeleton for avatar + name while loading
+                            <>
+                                <Skeleton className="h-10 w-10 rounded-full bg-muted animate-pulse" />
+                                <div className="flex flex-col gap-1">
+                                    <Skeleton className="h-4 w-28 bg-muted rounded animate-pulse" />
+                                    {/* <Skeleton className="h-3 w-40 bg-muted rounded animate-pulse" /> */}
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <Avatar className="h-10 w-10">
+                                    <AvatarImage src={admin?.profile_image} alt={admin?.name || "User avatar"} />
+                                    <AvatarFallback>{getInitials(admin?.name)}</AvatarFallback>
+                                </Avatar>
+                                <span className="font-medium truncate max-w-[180px]" title={admin?.name || "User"}>
+                                    {admin?.name || "User"}
+                                </span>
+                            </>
+                        )}
                     </Link>
+
+                    {/* User Dropdown (mobile) */}
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Avatar className="h-10 w-10 lg:hidden">
-                                {/* Replace with actual user image */}
-                                <AvatarImage src="https://github.com/shadcn.png" alt="User avatar" />
-                                <AvatarFallback>ER</AvatarFallback>
-                            </Avatar>
+                            {isLoading ? (
+                                <div className="h-10 w-10 rounded-full bg-muted animate-pulse lg:hidden" />
+                            ) : (
+                                <Avatar className="h-10 w-10 lg:hidden">
+                                    <AvatarImage src={admin?.profile_image} alt={admin?.name || "User avatar"} />
+                                    <AvatarFallback>{getInitials(admin?.name)}</AvatarFallback>
+                                </Avatar>
+                            )}
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="max-w-64 mr-4">
-                            <DropdownMenuLabel className="flex min-w-0 flex-col">
-                                <span className="text-foreground truncate text-sm font-medium">
-                                    Emilioroo
-                                </span>
-                                <span className="text-muted-foreground truncate text-xs font-normal">
-                                    emilioroo@gmail.com
-                                </span>
-                            </DropdownMenuLabel>
+                            {isLoading ? (
+                                <div className="p-2 min-w-[200px]">
+                                    <div className="h-4 w-28 bg-muted rounded animate-pulse mb-2" />
+                                    <div className="h-3 w-40 bg-muted rounded animate-pulse" />
+                                </div>
+                            ) : (
+                                <DropdownMenuLabel className="flex min-w-0 flex-col">
+                                    <span className="text-foreground truncate text-sm font-medium">
+                                        {admin?.name || "User"}
+                                    </span>
+                                    <span className="text-muted-foreground truncate text-xs font-normal">
+                                        {admin?.email || ""}
+                                    </span>
+                                </DropdownMenuLabel>
+                            )}
                             <DropdownMenuSeparator />
                             <DropdownMenuGroup>
                                 <DropdownMenuItem asChild>

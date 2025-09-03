@@ -2,12 +2,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { useLoginMutation } from "@/redux/feature/auth/authApi";
 
 const loginSchema = z.object({
     email: z.string().email({ message: "Invalid email address." }),
@@ -15,9 +16,9 @@ const loginSchema = z.object({
 });
 
 const LoginForm = () => {
-    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const togglePasswordVisibility = () => setShowPassword(!showPassword);
+    const [login, {isLoading}] = useLoginMutation();
 
     const {
         register,
@@ -29,9 +30,7 @@ const LoginForm = () => {
     });
 
     const onSubmit = (data) => {
-        console.log(data);
-        navigate("/");
-
+        login(data)
     };
 
     return (
@@ -89,7 +88,7 @@ const LoginForm = () => {
                                 )}
                             </div>
 
-                            <Button type="submit" className="w-full">
+                            <Button loading={isLoading} type="submit" className="w-full">
                                 Login
                             </Button>
                         </div>

@@ -14,7 +14,7 @@ import { useEffect, useRef, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useDispatch } from "react-redux";
-import { setAccessToken, setUser } from "@/redux/feature/auth/authSlice";
+import { setAccessToken, setAdmin } from "@/redux/feature/auth/authSlice";
 import { Button } from "../ui/button";
 
 
@@ -56,8 +56,9 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
     }, [location, isSidebarOpen, setIsSidebarOpen]);
 
     const handleLogout = () => {
-        dispatch(setUser(null));
+        dispatch(setAdmin(null));
         dispatch(setAccessToken(null));
+        localStorage.removeItem("accessToken");
         window.location.href = "/auth/login";
     };
 

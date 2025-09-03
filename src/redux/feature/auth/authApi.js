@@ -1,6 +1,7 @@
-import { toast } from "sonner";
-import { setAccessToken } from "../auth/authSlice";
+import { SuccessToast, ErrorToast } from "@/lib/utils";
+import { setAccessToken, setAdmin } from "../auth/authSlice";
 import { baseApi } from "../baseApi";
+import { jwtDecode } from "jwt-decode";
 
 const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -12,6 +13,16 @@ const authApi = baseApi.injectEndpoints({
                 method: "GET",
             }),
             providesTags: ["PROFILE"],
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled;
+                    if (data?.data) {
+                        dispatch(setAdmin(data.data));
+                    }
+                } catch {
+                    // silently ignore; UI can read error from hook if needed
+                }
+            },
         }),
 
         // UPDATE ADMIN PROFILE
@@ -35,12 +46,19 @@ const authApi = baseApi.injectEndpoints({
                 try {
                     const { data } = await queryFulfilled;
                     const accessToken = data?.data?.accessToken;
-                    if (accessToken) {
-                        dispatch(setAccessToken(accessToken));
-                    }
-                    toast.success("Login successful!");
+                    const decoded = jwtDecode(accessToken);
+                    if (decoded?.role === "superAdmin" || decoded?.role === "admin") {
+                        if (accessToken) {
+                            dispatch(setAccessToken(accessToken));
+                        }
+                        SuccessToast("Login successful!");
+                        window.location.href = "/";
+                      } else {
+                        ErrorToast("You are not authorized to login.");
+                        return;
+                      }
                 } catch (error) {
-                    toast.error(error?.error?.data?.message || "Login failed.");
+                    ErrorToast(error?.error?.data?.message || "Login failed.");
                 }
             },
         }),
@@ -55,9 +73,9 @@ const authApi = baseApi.injectEndpoints({
             async onQueryStarted(arg, { queryFulfilled }) {
                 try {
                     await queryFulfilled;
-                    toast.success("New OTP sent to your email!");
+                    SuccessToast("New OTP sent to your email!");
                 } catch (error) {
-                    toast.error(error?.error?.data?.message || "Failed to send new OTP.");
+                    ErrorToast(error?.error?.data?.message || "Failed to send new OTP.");
                 }
             },
         }),
@@ -94,9 +112,9 @@ const authApi = baseApi.injectEndpoints({
             async onQueryStarted(arg, { queryFulfilled }) {
                 try {
                     await queryFulfilled;
-                    toast.success("OTP verification successful!");
+                    SuccessToast("OTP verification successful!");
                 } catch (error) {
-                    toast.error(error?.error?.data?.message || "OTP verification failed.");
+                    ErrorToast(error?.error?.data?.message || "OTP verification failed.");
                 }
             },
         }),
@@ -111,9 +129,9 @@ const authApi = baseApi.injectEndpoints({
             async onQueryStarted(arg, { queryFulfilled }) {
                 try {
                     await queryFulfilled;
-                    toast.success("New OTP sent to your email!");
+                    SuccessToast("New OTP sent to your email!");
                 } catch (error) {
-                    toast.error(error?.error?.data?.message || "Failed to send new OTP.");
+                    ErrorToast(error?.error?.data?.message || "Failed to send new OTP.");
                 }
             },
         }),
@@ -126,11 +144,29 @@ const authApi = baseApi.injectEndpoints({
                     method: 'POST',
                     body: data
                 }
-            }
+            },
+            async onQueryStarted(arg, { queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                    SuccessToast("Password changed successfully!");
+                } catch (error) {
+                    ErrorToast(error?.error?.data?.message || "Failed to change password.");
+                }
+            },
         }),
 
 
     })
 })
 
-export const { useLoginMutation, useResendOTPMutation, useResendResetOTPMutation, useGetAdminProfileQuery, useUpdateAdminProfileMutation, useChangePasswordMutation, useForgetPasswordMutation, useResetPasswordMutation } = authApi;
+export const {
+    useGetAdminProfileQuery,
+    useUpdateAdminProfileMutation,
+    useLoginMutation,
+    useResendOTPMutation,
+    useResendResetOTPMutation,
+    useForgetPasswordMutation,
+    useResetPasswordMutation,
+    useVerifyOTPForResetPasswordMutation,
+    useChangePasswordMutation,
+} = authApi;
