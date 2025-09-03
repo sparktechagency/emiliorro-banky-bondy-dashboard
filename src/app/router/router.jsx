@@ -51,10 +51,6 @@ export const router = createBrowserRouter([
                 element: <Report />
             },
             {
-                path: "contact-us",
-                element: <Contact />
-            },
-            {
                 path: "make-admin",
                 element: <MakeAdmin />
             },
@@ -77,6 +73,10 @@ export const router = createBrowserRouter([
             {
                 path: "settings/privacy",
                 element: <Privacy />
+            },
+            {
+                path: "settings/contact-us",
+                element: <Contact />
             },
         ]
     },

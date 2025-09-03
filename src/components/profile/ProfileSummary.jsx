@@ -3,9 +3,27 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useSelector } from "react-redux";
 import { getInitials } from "@/lib/utils";
 import { Camera, ShieldCheck, User2 } from "lucide-react";
+import { useRef } from "react";
+import { ErrorToast } from "@/lib/utils";
 
-const ProfileSummary = () => {
+const ProfileSummary = ({ previewUrl, onSelectImage }) => {
   const admin = useSelector((state) => state.auth.admin);
+  const fileInputRef = useRef(null);
+
+  const onPickImage = () => {
+    fileInputRef.current?.click();
+  };
+
+  const onFileChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const objectUrl = URL.createObjectURL(file);
+      onSelectImage?.(file, objectUrl);
+    } catch {
+      ErrorToast("Failed to select image");
+    }
+  };
   return (
     <div className="space-y-4">
       <Card className="overflow-hidden">
@@ -13,12 +31,30 @@ const ProfileSummary = () => {
           <div className="flex flex-col items-center text-center gap-3">
             <div className="relative">
               <Avatar className="h-20 w-20 border">
-                <AvatarImage src={admin?.profile_image} alt={admin?.name || "User"} />
+                <AvatarImage src={previewUrl || admin?.profile_image} alt={admin?.name || "User"} />
                 <AvatarFallback>{getInitials(admin?.name)}</AvatarFallback>
               </Avatar>
-              <span className="absolute -bottom-1 -right-1 p-1 rounded-full border bg-background shadow">
+              <button
+                type="button"
+                onClick={onPickImage}
+                className="absolute -bottom-1 -right-1 p-1 rounded-full border bg-background shadow"
+                aria-label="Change profile image"
+                title="Choose profile image"
+              >
                 <Camera size={14} />
-              </span>
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={onFileChange}
+                className="hidden"
+              />
+              {previewUrl && (
+                <span className="absolute -top-1 -right-1 text-[10px] bg-primary text-primary-foreground px-1.5 py-0.5 rounded">
+                  Pending
+                </span>
+              )}
             </div>
             <div>
               <p className="font-semibold text-base">{admin?.name || "User"}</p>

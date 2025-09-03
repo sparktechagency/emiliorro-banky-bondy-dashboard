@@ -36,7 +36,7 @@ const settingsSubItems = [
     { name: "About Us", icon: BadgeInfo, href: "/settings/about" },
     { name: "Terms & Condition", icon: ReceiptText, href: "/settings/terms" },
     { name: "Privacy Policy", icon: GlobeLock, href: "/settings/privacy" },
-    { name: "Contact Us", icon: GlobeLock, href: "/contact-us" },
+    { name: "Contact Us", icon: GlobeLock, href: "settings/contact-us" },
 ];
 
 const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
@@ -125,18 +125,6 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                         </NavLink>
                     ))}
 
-                    {/* Remaining NavItems (Order, Payment) */}
-                    {navItems.slice(1).map((item) => (
-                        <NavLink key={item.name} to={item.href} end className={({ isActive }) =>
-                            `w-full flex items-center justify-start p-2 rounded-sm text-sm font-medium transition-colors duration-200 border 
-                    ${isActive ? "bg-primary text-primary-foreground" : "hover:bg-accent hover:text-accent-foreground bg-black/5 dark:bg-white/5"
-                            }`
-                        } onClick={() => setIsSidebarOpen(false)}>
-                            <item.icon className="mr-2 w-4 h-4" />
-                            {item.name}
-                        </NavLink>
-                    ))}
-
                     <Collapsible defaultOpen={isSettingsPath}>
                         <CollapsibleTrigger onClick={() => setIsSettingsOpen(!isSettingsOpen)} className={`w-full flex items-center justify-between p-2 rounded-sm text-base font-medium cursor-pointer transition-colors duration-200 border 
                     ${isSettingsPath ? "bg-primary text-primary-foreground" : "hover:bg-accent hover:text-accent-foreground bg-black/5 dark:bg-white/5"
@@ -145,7 +133,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                                 <Settings className="mr-2 h-4 w-4" />
                                 Settings
                             </div>
-                            <ChevronDown className={`h-4 w-4 transition-transform duration-300 ${!isSettingsOpen ? "-rotate-180" : ""}`} />
+                            <ChevronDown className={`h-4 w-4 transition-transform duration-300 ${isSettingsOpen ? "-rotate-180" : ""}`} />
 
                         </CollapsibleTrigger>
                         <CollapsibleContent className="py-2 space-y-2">

@@ -85,11 +85,11 @@ const Users = () => {
                                     <TableCell>{user.email}</TableCell>
                                     <TableCell>{user.contact}</TableCell>
                                     <TableCell>{user.location}</TableCell>
-                                    <TableCell className="text-right">
-                                        <Button variant="ghost" size="icon">
+                                    <TableCell className="text-right space-x-2">
+                                        <Button variant="outline" size="icon">
                                             <Eye className="h-5 w-5" />
                                         </Button>
-                                        <Button variant="ghost" size="icon" className="text-red-500">
+                                        <Button variant="outline" size="icon" className="text-red-500">
                                             <Ban className="h-5 w-5" />
                                         </Button>
                                     </TableCell>

@@ -1,5 +1,5 @@
 'use client';
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { Card } from "@/components/ui/card";
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import ProfileSummary from "@/components/profile/ProfileSummary";
@@ -13,6 +13,9 @@ import {
 } from "@/components/ui/tabs";
 
 const Profile = () => {
+    const [pendingImage, setPendingImage] = useState(null);
+    const [previewUrl, setPreviewUrl] = useState(null);
+
     return (
         <Suspense fallback={<div className="flex items-center justify-center h-64">Loading Profile...</div>}>
             <div className="space-y-4">
@@ -22,7 +25,19 @@ const Profile = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
                     {/* Left Column */}
                     <div className="lg:col-span-4 space-y-4">
-                        <ProfileSummary />
+                        <ProfileSummary
+                            pendingImage={pendingImage}
+                            previewUrl={previewUrl}
+                            onSelectImage={(file, preview) => {
+                                setPendingImage(file);
+                                setPreviewUrl(preview);
+                            }}
+                            onClearPending={() => {
+                                if (previewUrl) URL.revokeObjectURL(previewUrl);
+                                setPendingImage(null);
+                                setPreviewUrl(null);
+                            }}
+                        />
                     </div>
 
                     {/* Right Column */}
@@ -38,7 +53,14 @@ const Profile = () => {
 
                                 <div className="p-4 sm:p-6">
                                     <TabsContent value="profile">
-                                        <EditProfileForm />
+                                        <EditProfileForm
+                                            pendingImage={pendingImage}
+                                            onClearPending={() => {
+                                                if (previewUrl) URL.revokeObjectURL(previewUrl);
+                                                setPendingImage(null);
+                                                setPreviewUrl(null);
+                                            }}
+                                        />
                                     </TabsContent>
                                     <TabsContent value="password">
                                         <ChangePasswordForm />

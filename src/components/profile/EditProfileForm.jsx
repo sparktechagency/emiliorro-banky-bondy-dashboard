@@ -5,13 +5,14 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Lock, ShieldCheck, User2 } from "lucide-react";
 import { useSelector } from "react-redux";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUpdateAdminProfileMutation } from "@/redux/feature/auth/authApi";
 import { ErrorToast, SuccessToast } from "@/lib/utils";
 
-const EditProfileForm = () => {
+const EditProfileForm = ({ pendingImage, onClearPending }) => {
   const admin = useSelector((state) => state.auth.admin);
   const [updateProfile, { isLoading }] = useUpdateAdminProfileMutation();
 
@@ -23,8 +24,8 @@ const EditProfileForm = () => {
       .trim()
       .optional()
       .transform((v) => (v === "" ? undefined : v))
-      .refine((v) => !v || /^\+?\d{10,15}$/.test(v), {
-        message: "Invalid phone number",
+      .refine((v) => !v || v.length > 10, {
+        message: "Phone number must be longer than 10 characters",
       }),
     address: z
       .string()
@@ -37,15 +38,47 @@ const EditProfileForm = () => {
     defaultValues: {
       name: admin?.name || "",
       email: admin?.email || "",
-      phone: admin?.phone || "",
+      phone: admin?.contact || "",
       address: admin?.address || "",
     },
   });
 
+  // Ensure form values update when profile loads/changes
+  useEffect(() => {
+    if (admin) {
+      reset({
+        name: admin?.name || "",
+        email: admin?.email || "",
+        phone: admin?.contact || "",
+        address: admin?.address || "",
+      });
+    }
+  }, [admin, reset]);
+
   const onSubmit = async (values) => {
     try {
-      const payload = { name: values.name, phone: values.phone, address: values.address };
-      await updateProfile(payload).unwrap();
+      // If a new image is selected in ProfileSummary, send multipart/form-data
+      if (pendingImage) {
+        const formData = new FormData();
+        formData.append("profile_image", pendingImage);
+        formData.append(
+          "data",
+          JSON.stringify({
+            name: values.name,
+            contact: values.phone,
+            address: values.address,
+          })
+        );
+        await updateProfile(formData).unwrap();
+        onClearPending?.();
+      } else {
+        const payload = {
+          name: values.name,
+          contact: values.phone,
+          address: values.address,
+        };
+        await updateProfile(payload).unwrap();
+      }
       SuccessToast("Profile updated successfully");
       reset({ ...values });
     } catch (err) {
@@ -74,6 +107,12 @@ const EditProfileForm = () => {
                   <p className="text-xs text-destructive">{formState.errors.name.message}</p>
                 )}
               </div>
+              {pendingImage && (
+                <div className="text-xs rounded border px-3 py-2 bg-amber-500/20 text-muted-foreground">
+                  New profile image selected. It will be uploaded when you click &quot;Save Changes&quot;.
+                  <button type="button" className="ml-2 underline" onClick={() => onClearPending?.()}>Clear</button>
+                </div>
+              )}
             </div>
           </section>
 
@@ -106,7 +145,7 @@ const EditProfileForm = () => {
             <div className="grid grid-cols-1 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="phone">Contact Number</Label>
-                <Input id="phone" type="tel" placeholder="+8801XXXXXXXXX" {...register("phone")} />
+                <Input id="phone" type="tel" placeholder="Your contact number" {...register("phone")} />
                 {formState.errors.phone && (
                   <p className="text-xs text-destructive">{formState.errors.phone.message}</p>
                 )}
