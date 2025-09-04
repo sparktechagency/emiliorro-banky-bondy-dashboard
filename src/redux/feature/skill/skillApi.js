@@ -40,7 +40,7 @@ const skillApi = baseApi.injectEndpoints({
         // ADD SKILL
         addSkill: builder.mutation({
             query: (data) => ({
-                url: "/skill/add-skill",
+                url: "/skill/create-skill",
                 method: "POST",
                 body: data,
             }),
@@ -49,9 +49,9 @@ const skillApi = baseApi.injectEndpoints({
 
         // UPDATE SKILL
         updateSkill: builder.mutation({
-            query: (data) => ({
-                url: "/skill/update-skill",
-                method: "PUT",
+            query: ({id, data}) => ({
+                url: `/skill/update-skill/${id}`,
+                method: "PATCH",
                 body: data,
             }),
             invalidatesTags: ["SKILL"],

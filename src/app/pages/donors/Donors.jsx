@@ -28,9 +28,7 @@ const Donors = () => {
     return (
         <Suspense
             fallback={
-                <div className="flex items-center justify-center h-64">
-                    Loading Donors...
-                </div>
+                <TableSkeleton />
             }
         >
             <PageLayout
@@ -62,7 +60,7 @@ const Donors = () => {
                 {/* Table */}
                 {
                     isLoading ? (
-                        <TableSkeleton columns={6} rows={10} />
+                        <TableSkeleton />
                     ) : (
                         <DonorsTable donors={donors} />
                     )
