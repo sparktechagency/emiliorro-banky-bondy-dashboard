@@ -3,7 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { SquarePen, Trash } from "lucide-react";
 
-const TopicTable = ({ topics }) => {
+const TopicTable = ({ topics, onEdit, onDelete }) => {
     return (
         <ScrollArea className="w-[calc(100vw-32px)] md:w-full rounded-lg overflow-hidden whitespace-nowrap">
             <Table>
@@ -20,10 +20,19 @@ const TopicTable = ({ topics }) => {
                             <TableCell>{index + 1}</TableCell>
                             <TableCell>{topic.name}</TableCell>
                             <TableCell className="text-right space-x-2">
-                                <Button variant="outline" size="icon">
+                                <Button
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() => onEdit && onEdit(topic)}
+                                >
                                     <SquarePen className="h-5 w-5" />
                                 </Button>
-                                <Button variant="outline" size="icon" className="text-red-500">
+                                <Button
+                                    variant="outline"
+                                    size="icon"
+                                    className="text-red-500"
+                                    onClick={() => onDelete && onDelete(topic)}
+                                >
                                     <Trash className="h-5 w-5" />
                                 </Button>
                             </TableCell>

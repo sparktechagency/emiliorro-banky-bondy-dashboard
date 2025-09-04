@@ -26,7 +26,7 @@ const topicApi = baseApi.injectEndpoints({
         // ADD TOPIC
         addTopic: builder.mutation({
             query: (data) => ({
-                url: "/topic/add-topic",
+                url: "/topic/create-topic",
                 method: "POST",
                 body: data,
             }),
@@ -35,8 +35,8 @@ const topicApi = baseApi.injectEndpoints({
 
         // UPDATE TOPIC
         updateTopic: builder.mutation({
-            query: (data) => ({
-                url: "/topic/update-topic",
+            query: ({data, id}) => ({
+                url: `/topic/update-topic/${id}`,
                 method: "PUT",
                 body: data,
             }),
