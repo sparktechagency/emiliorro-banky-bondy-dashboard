@@ -1,10 +1,11 @@
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SquarePen, Trash } from "lucide-react";
 
 
-const SkillTable = ({ skills }) => {
+const SkillTable = ({ skills, onEdit, onDelete, updateLoading, deleteLoading }) => {
     return (
         <ScrollArea className="w-[calc(100vw-32px)] md:w-full rounded-lg overflow-hidden whitespace-nowrap">
             <Table>
@@ -19,12 +20,12 @@ const SkillTable = ({ skills }) => {
                     {skills.map((skill, index) => (
                         <TableRow key={skill._id}>
                             <TableCell>{index + 1}</TableCell>
-                            <TableCell>{skill.name}</TableCell>
+                            <TableCell><Badge variant="outline">{skill.name}</Badge></TableCell>
                             <TableCell className="text-right space-x-2">
-                                <Button variant="outline" size="icon">
+                                <Button onClick={() => onEdit?.(skill)} variant="outline" size="icon" disabled={updateLoading}>
                                     <SquarePen className="h-5 w-5" />
                                 </Button>
-                                <Button variant="outline" size="icon" className="text-red-500">
+                                <Button onClick={() => onDelete?.(skill)} variant="outline" size="icon" className="text-red-500" disabled={deleteLoading}>
                                     <Trash className="h-5 w-5" />
                                 </Button>
                             </TableCell>

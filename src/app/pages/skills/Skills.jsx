@@ -5,16 +5,26 @@ import { Plus, Search } from "lucide-react";
 import CustomPagination from "@/components/common/CustomPagination";
 import { useState } from "react";
 import PageLayout from "@/components/main-layout/PageLayout";
-import { useGetAllSkillQuery } from "@/redux/feature/skill/skillApi";
+import { useGetAllSkillQuery, useAddSkillMutation, useUpdateSkillMutation, useDeleteSkillMutation } from "@/redux/feature/skill/skillApi";
 import useDebounce from "@/hooks/usedebounce";
 import SkillTable from "@/components/skill/table/SkillTable";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
 import { Input } from "@/components/ui/input";
+import AddSkillModal from "@/components/skill/modal/AddSkillModal";
+import EditSkillModal from "@/components/skill/modal/EditSkillModal";
+import ConfirmationModal from "@/components/common/ConfirmationModal";
 
 const Skills = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [limit] = useState(10);
+    const [addOpen, setAddOpen] = useState(false);
+    const [editOpen, setEditOpen] = useState(false);
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [selectedSkill, setSelectedSkill] = useState(null);
+    const [addSkillMutation, { isLoading: addLoading }] = useAddSkillMutation();
+    const [updateSkillMutation, { isLoading: updateLoading }] = useUpdateSkillMutation();
+    const [deleteSkillMutation, { isLoading: deleteLoading }] = useDeleteSkillMutation();
 
     const debouncedSearch = useDebounce(searchTerm, 400);
     const { data, isLoading } = useGetAllSkillQuery({
@@ -22,7 +32,6 @@ const Skills = () => {
         limit,
         searchTerm: debouncedSearch,
     });
-
 
     const skills = data?.data?.result || [];
     const totalPages = data?.data?.meta?.totalPage || 1;
@@ -60,7 +69,7 @@ const Skills = () => {
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
-                        <Button>
+                        <Button onClick={() => setAddOpen(true)}>
                             <Plus />
                             Add Skill
                         </Button>
@@ -72,10 +81,57 @@ const Skills = () => {
                     isLoading ? (
                         <TableSkeleton columns={3} rows={10} />
                     ) : (
-                        <SkillTable skills={skills} />
+                        <SkillTable
+                            skills={skills}
+                            onEdit={(skill) => { setSelectedSkill(skill); setEditOpen(true); }}
+                            onDelete={(skill) => { setSelectedSkill(skill); setConfirmOpen(true); }}
+                            updateLoading={updateLoading}
+                            deleteLoading={deleteLoading}
+                        />
                     )
                 }
             </PageLayout>
+            
+            {/* Add Skill Modal */}
+            <AddSkillModal
+                isOpen={addOpen}
+                onOpenChange={setAddOpen}
+                loading={addLoading}
+                onSubmit={async (values) => {
+                    await addSkillMutation(values);
+                    setAddOpen(false);
+                }}
+            />
+            {/* Edit Skill Modal */}
+            <EditSkillModal
+                isOpen={editOpen}
+                onOpenChange={setEditOpen}
+                skill={selectedSkill}
+                loading={updateLoading}
+                onSubmit={async (values) => {
+                    if (selectedSkill?._id) {
+                        await updateSkillMutation({ id: selectedSkill._id, data: values });
+                        setEditOpen(false);
+                        setSelectedSkill(null);
+                    }
+                }}
+            />
+            {/* Delete Confirmation Modal */}
+            <ConfirmationModal
+                isOpen={confirmOpen}
+                onOpenChange={setConfirmOpen}
+                title={"Confirm Delete Skill"}
+                description={"Are you sure you want to delete this skill?"}
+                confirmText={"Delete"}
+                loading={deleteLoading}
+                onConfirm={async () => {
+                    if (selectedSkill?._id) {
+                        await deleteSkillMutation(selectedSkill._id);
+                        setConfirmOpen(false);
+                        setSelectedSkill(null);
+                    }
+                }}
+            />
         </Suspense>
     );
 };

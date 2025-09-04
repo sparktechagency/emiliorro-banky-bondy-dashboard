@@ -29,7 +29,7 @@ const Users = () => {
     return (
         <Suspense
             fallback={
-                <TableSkeleton columns={6} rows={10} />
+                <TableSkeleton />
             }
         >
             <PageLayout
@@ -60,7 +60,7 @@ const Users = () => {
                 </div>
                 {/* Table */}
                 {isLoading ? (
-                    <TableSkeleton columns={6} rows={10} />
+                    <TableSkeleton />
                 ) : (
                     <UsersTable users={users} />
                 )}

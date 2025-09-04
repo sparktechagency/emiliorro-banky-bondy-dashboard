@@ -59,7 +59,7 @@ const RowSkeleton = ({ columns = 6 }) => (
 
 const TableSkeleton = ({ columns = 6, rows = 10 }) => {
   return (
-    <ScrollArea className="w-[calc(100vw-32px)] overflow-auto rounded-lg border">
+    <ScrollArea className="w-[calc(100vw-32px)] md:w-full rounded-lg whitespace-nowrap border">
         <Table>
           <TableHeader>
             <HeaderSkeleton columns={columns} />
