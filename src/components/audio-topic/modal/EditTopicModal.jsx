@@ -6,8 +6,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { AlertCircleIcon, ImageUpIcon, XIcon } from 'lucide-react';
-import { useFileUpload } from '@/hooks/use-file-upload';
 
 const formSchema = z.object({
   name: z.string().min(1, { message: 'Topic name is required.' }),
@@ -25,19 +23,6 @@ const EditTopicModal = ({ isOpen, onOpenChange, topic, onSubmit, loading }) => {
       form.reset({ name: topic.name || '', topic_image: undefined });
     }
   }, [topic, form]);
-
-  // Drag & drop uploader (single file)
-  const maxSizeMB = 5;
-  const maxSize = maxSizeMB * 1024 * 1024;
-  const [state, actions] = useFileUpload({ accept: 'image/*', maxSize });
-  const { files, isDragging, errors } = state;
-  const { getInputProps, openFileDialog, handleDragEnter, handleDragLeave, handleDragOver, handleDrop, removeFile } = actions;
-
-  // Sync selected file to RHF whenever it changes
-  useEffect(() => {
-    const file = files[0]?.file || undefined;
-    form.setValue('topic_image', file, { shouldValidate: true });
-  }, [files, form]);
 
   const handleFormSubmit = async (values) => {
     await onSubmit(values);
@@ -67,75 +52,24 @@ const EditTopicModal = ({ isOpen, onOpenChange, topic, onSubmit, loading }) => {
             <FormField
               control={form.control}
               name="topic_image"
-              render={() => {
-                const previewUrl = files[0]?.preview || topic?.topic_image || null;
-                const hasLocal = Boolean(files[0]);
-                return (
-                  <FormItem>
-                    <FormLabel>Replace Image (optional)</FormLabel>
-                    <FormControl>
-                      <div className="flex flex-col gap-2">
-                        <div className="relative">
-                          <div
-                            role="button"
-                            onClick={openFileDialog}
-                            onDragEnter={handleDragEnter}
-                            onDragLeave={handleDragLeave}
-                            onDragOver={handleDragOver}
-                            onDrop={handleDrop}
-                            data-dragging={isDragging || undefined}
-                            className="border-input hover:bg-accent/50 data-[dragging=true]:bg-accent/50 has-[input:focus]:border-ring has-[input:focus]:ring-ring/50 relative flex min-h-52 flex-col items-center justify-center overflow-hidden rounded-xl border border-dashed p-4 transition-colors has-disabled:pointer-events-none has-disabled:opacity-50 has-[img]:border-none has-[input:focus]:ring-[3px]"
-                          >
-                            <input {...getInputProps()} className="sr-only" aria-label="Upload file" />
-                            {previewUrl ? (
-                              <div className="absolute inset-0">
-                                <img
-                                  src={previewUrl}
-                                  alt={hasLocal ? files[0]?.file?.name : topic?.name || 'Uploaded image'}
-                                  className="size-full object-cover"
-                                />
-                              </div>
-                            ) : (
-                              <div className="flex flex-col items-center justify-center px-4 py-3 text-center">
-                                <div className="bg-background mb-2 flex size-11 shrink-0 items-center justify-center rounded-full border" aria-hidden="true">
-                                  <ImageUpIcon className="size-4 opacity-60" />
-                                </div>
-                                <p className="mb-1.5 text-sm font-medium">Drop your image here or click to browse</p>
-                                <p className="text-muted-foreground text-xs">Max size: {maxSizeMB}MB</p>
-                              </div>
-                            )}
-                          </div>
-                          {previewUrl && (
-                            <div className="absolute top-4 right-4">
-                              <button
-                                type="button"
-                                className="focus-visible:border-ring focus-visible:ring-ring/50 z-50 flex size-8 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white transition-[color,box-shadow] outline-none hover:bg-black/80 focus-visible:ring-[3px]"
-                                onClick={() => {
-                                  if (hasLocal) {
-                                    removeFile(files[0]?.id);
-                                  }
-                                  form.setValue('topic_image', undefined, { shouldValidate: true });
-                                }}
-                                aria-label="Remove image"
-                              >
-                                <XIcon className="size-4" aria-hidden="true" />
-                              </button>
-                            </div>
-                          )}
-                        </div>
-
-                        {(errors?.length > 0 || form.formState.errors.topic_image) && (
-                          <div className="text-destructive flex items-center gap-1 text-xs" role="alert">
-                            <AlertCircleIcon className="size-3 shrink-0" />
-                            <span>{errors?.[0] || form.formState.errors.topic_image?.message}</span>
-                          </div>
-                        )}
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
+              render={({ field: { onChange, value, ...field } }) => (
+                <FormItem>
+                  <FormLabel>Replace Image (optional)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        onChange(file);
+                      }}
+                      {...field}
+                      value={undefined}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
