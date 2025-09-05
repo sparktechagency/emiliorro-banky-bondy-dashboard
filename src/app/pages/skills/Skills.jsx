@@ -29,7 +29,7 @@ const Skills = () => {
     const [deleteSkillMutation, { isLoading: deleteLoading, isSuccess: deleteSuccess }] = useDeleteSkillMutation();
 
     const debouncedSearch = useDebounce(searchTerm, 600, setCurrentPage);
-    const { data, isLoading } = useGetAllSkillQuery({
+    const { data, isLoading, isFetching } = useGetAllSkillQuery({
         page: currentPage,
         limit,
         searchTerm: debouncedSearch,
@@ -130,7 +130,7 @@ const Skills = () => {
                 </div>
                 {/* Table */}
                 {
-                    isLoading ? (
+                    isLoading || isFetching ? (
                         <TableSkeleton columns={3} rows={10} />
                     ) : (
                         <SkillTable

@@ -37,7 +37,7 @@ const AudioTopic = () => {
 
     const debouncedSearch = useDebounce(searchTerm, 600, setCurrentPage);
     
-    const { data, isLoading } = useGetAllTopicQuery({
+    const { data, isLoading, isFetching } = useGetAllTopicQuery({
         page: currentPage,
         limit,
         searchTerm: debouncedSearch,
@@ -129,7 +129,7 @@ const AudioTopic = () => {
                     </div>
 
                     {/* Table */}
-                    {isLoading ? (
+                    {isLoading || isFetching ? (
                         <TableSkeleton columns={4} rows={10} />
                     ) : (
                         <TopicTable
