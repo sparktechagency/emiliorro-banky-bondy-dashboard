@@ -1,20 +1,27 @@
-import { Suspense } from "react";
-import Title from "@/components/ui/Title";
-import { Button } from "@/components/ui/button";
-import { Plus, Search } from "lucide-react";
-import CustomPagination from "@/components/common/CustomPagination";
-import { useState } from "react";
-import PageLayout from "@/components/main-layout/PageLayout";
-import { useAddTopicMutation, useDeleteTopicMutation, useGetAllTopicQuery, useUpdateTopicMutation } from "@/redux/feature/topic/topicApi";
-import TopicTable from "@/components/audio-topic/table/TopicTable";
-import TableSkeleton from "@/components/skeleton/TableSkeleton";
-import AddTopicModal from "@/components/audio-topic/modal/AddTopicModal";
-import EditTopicModal from "@/components/audio-topic/modal/EditTopicModal";
-import ConfirmationModal from "@/components/common/ConfirmationModal";
-import { Input } from "@/components/ui/input";
+'use client';
+import React, { useState, Suspense } from 'react';
+import { Plus, Search } from 'lucide-react';
+
+import Title from '@/components/ui/Title';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import PageLayout from '@/components/main-layout/PageLayout';
+import CustomPagination from '@/components/common/CustomPagination';
+import TableSkeleton from '@/components/skeleton/TableSkeleton';
+import TopicTable from '@/components/audio-topic/table/TopicTable';
+import AddTopicModal from '@/components/audio-topic/modal/AddTopicModal';
+import EditTopicModal from '@/components/audio-topic/modal/EditTopicModal';
+import ConfirmationModal from '@/components/common/ConfirmationModal';
+
+import {
+    useAddTopicMutation,
+    useDeleteTopicMutation,
+    useGetAllTopicQuery,
+    useUpdateTopicMutation,
+} from '@/redux/feature/topic/topicApi';
 
 const AudioTopic = () => {
-    const [searchTerm, setSearchTerm] = useState("");
+    const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [limit] = useState(10);
 
@@ -36,13 +43,54 @@ const AudioTopic = () => {
     const topics = data?.data?.result || [];
     const totalPages = data?.data?.meta?.totalPage || 1;
 
+    // Modal Handlers
+    const handleAddTopic = async (data) => {
+        const formData = new FormData();
+        if (data?.topic_image) {
+            formData.append('topic_image', data.topic_image);
+        }
+        formData.append('data', JSON.stringify({ name: data?.name }));
+        try {
+            await addTopicMutation(formData).unwrap();
+            setAddOpen(false);
+        } catch (err) {
+            console.error('Add topic failed:', err);
+        }
+    };
+
+    const handleEditTopic = async (data) => {
+        if (!selectedTopic?._id) return;
+        const formData = new FormData();
+        if (data?.topic_image) {
+            formData.append('topic_image', data.topic_image);
+        }
+        formData.append(
+            'data',
+            JSON.stringify({ id: selectedTopic._id, name: data?.name })
+        );
+        try {
+            await updateTopicMutation({ id: selectedTopic._id, data: formData }).unwrap();
+            setEditOpen(false);
+            setSelectedTopic(null);
+        } catch (err) {
+            console.error('Update topic failed:', err);
+        }
+    };
+
+    const handleDeleteTopic = async () => {
+        if (!selectedTopic?._id) return;
+        try {
+            await deleteTopicMutation(selectedTopic._id).unwrap();
+            setConfirmOpen(false);
+            setSelectedTopic(null);
+        } catch (err) {
+            console.error('Delete topic failed:', err);
+        }
+    };
+
     return (
         <>
-            <Suspense
-                fallback={
-                    <TableSkeleton />
-                }
-            >
+            <Suspense fallback={<TableSkeleton columns={4} rows={10} />}>
                 <PageLayout
                     pagination={
                         totalPages > 1 && (
@@ -76,18 +124,23 @@ const AudioTopic = () => {
                             </Button>
                         </div>
                     </div>
+
                     {/* Table */}
-                    {
-                        isLoading ? (
-                            <TableSkeleton />
-                        ) : (
-                            <TopicTable
-                                topics={topics}
-                                onEdit={(topic) => { setSelectedTopic(topic); setEditOpen(true); }}
-                                onDelete={(topic) => { setSelectedTopic(topic); setConfirmOpen(true); }}
-                            />
-                        )
-                    }
+                    {isLoading ? (
+                        <TableSkeleton columns={4} rows={10} />
+                    ) : (
+                        <TopicTable
+                            topics={topics}
+                            onEdit={(topic) => {
+                                setSelectedTopic(topic);
+                                setEditOpen(true);
+                            }}
+                            onDelete={(topic) => {
+                                setSelectedTopic(topic);
+                                setConfirmOpen(true);
+                            }}
+                        />
+                    )}
                 </PageLayout>
             </Suspense>
 
@@ -95,34 +148,16 @@ const AudioTopic = () => {
             <AddTopicModal
                 isOpen={addOpen}
                 onOpenChange={setAddOpen}
-                onSubmit={async (values) => {
-                    const formData = new FormData();
-                    if (values?.topic_image) {
-                        formData.append('topic_image', values.topic_image);
-                    }
-                    formData.append('data', JSON.stringify({ name: values?.name }));
-                    await addTopicMutation(formData);
-                    setAddOpen(false);
-                }}
+                onSubmit={handleAddTopic}
                 loading={addLoading}
             />
+
             {/* Edit Topic Modal */}
             <EditTopicModal
                 isOpen={editOpen}
                 onOpenChange={setEditOpen}
                 topic={selectedTopic}
-                onSubmit={async (values) => {
-                    if (selectedTopic?._id) {
-                        const formData = new FormData();
-                        if (values?.topic_image) {
-                            formData.append('topic_image', values.topic_image);
-                        }
-                        formData.append('data', JSON.stringify({ id: selectedTopic._id, name: values?.name }));
-                        await updateTopicMutation({ id: selectedTopic._id, data: formData });
-                        setEditOpen(false);
-                        setSelectedTopic(null);
-                    }
-                }}
+                onSubmit={handleEditTopic}
                 loading={updateLoading}
             />
 
@@ -130,17 +165,11 @@ const AudioTopic = () => {
             <ConfirmationModal
                 isOpen={confirmOpen}
                 onOpenChange={setConfirmOpen}
-                title={"Confirm Delete Topic"}
-                description={"Are you sure you want to delete this topic?"}
-                confirmText={"Delete"}
+                title="Confirm Delete Topic"
+                description="Are you sure you want to delete this topic?"
+                confirmText="Delete"
                 loading={deleteLoading}
-                onConfirm={async () => {
-                    if (selectedTopic?._id) {
-                        await deleteTopicMutation(selectedTopic._id);
-                        setConfirmOpen(false);
-                        setSelectedTopic(null);
-                    }
-                }}
+                onConfirm={handleDeleteTopic}
             />
         </>
     );

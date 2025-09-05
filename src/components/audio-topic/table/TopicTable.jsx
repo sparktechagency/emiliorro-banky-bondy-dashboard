@@ -11,6 +11,7 @@ const TopicTable = ({ topics, onEdit, onDelete }) => {
                     <TableRow>
                         <TableHead>S.No</TableHead>
                         <TableHead>Topic Name</TableHead>
+                        <TableHead>Topic Image</TableHead>
                         <TableHead className="text-right">Action</TableHead>
                     </TableRow>
                 </TableHeader>
@@ -19,6 +20,13 @@ const TopicTable = ({ topics, onEdit, onDelete }) => {
                         <TableRow key={topic._id}>
                             <TableCell>{index + 1}</TableCell>
                             <TableCell>{topic.name}</TableCell>
+                            <TableCell>
+                                <img
+                                    src={topic.topic_image}
+                                    alt={topic.name}
+                                    className="rounded-lg w-16 h-16"
+                                />
+                            </TableCell>
                             <TableCell className="text-right space-x-2">
                                 <Button
                                     variant="outline"

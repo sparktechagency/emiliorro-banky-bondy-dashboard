@@ -37,7 +37,7 @@ const topicApi = baseApi.injectEndpoints({
         updateTopic: builder.mutation({
             query: ({data, id}) => ({
                 url: `/topic/update-topic/${id}`,
-                method: "PUT",
+                method: "PATCH",
                 body: data,
             }),
             invalidatesTags: ["TOPIC"],
