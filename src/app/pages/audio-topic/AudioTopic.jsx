@@ -3,6 +3,7 @@ import React, { useState, Suspense } from 'react';
 import { Plus, Search } from 'lucide-react';
 
 import Title from '@/components/ui/Title';
+import useDebounce from '@/hooks/usedebounce';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import PageLayout from '@/components/main-layout/PageLayout';
@@ -34,10 +35,12 @@ const AudioTopic = () => {
     const [updateTopicMutation, { isLoading: updateLoading }] = useUpdateTopicMutation();
     const [deleteTopicMutation, { isLoading: deleteLoading }] = useDeleteTopicMutation();
 
-    const { data, isLoading, isFetching } = useGetAllTopicQuery({
+    const debouncedSearch = useDebounce(searchTerm, 600, setCurrentPage);
+    
+    const { data, isLoading } = useGetAllTopicQuery({
         page: currentPage,
         limit,
-        searchTerm,
+        searchTerm: debouncedSearch,
     });
 
     const topics = data?.data?.result || [];
@@ -126,7 +129,7 @@ const AudioTopic = () => {
                     </div>
 
                     {/* Table */}
-                    {isLoading || isFetching ? (
+                    {isLoading ? (
                         <TableSkeleton columns={4} rows={10} />
                     ) : (
                         <TopicTable

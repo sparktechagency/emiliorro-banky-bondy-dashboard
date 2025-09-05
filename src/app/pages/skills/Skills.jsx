@@ -13,22 +13,23 @@ import { Input } from "@/components/ui/input";
 import AddSkillModal from "@/components/skill/modal/AddSkillModal";
 import EditSkillModal from "@/components/skill/modal/EditSkillModal";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
+import { ErrorToast, SuccessToast } from "@/lib/utils";
 
 const Skills = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const [limit] = useState(3);
+    const [limit] = useState(10);
 
     const [addOpen, setAddOpen] = useState(false);
     const [editOpen, setEditOpen] = useState(false);
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [selectedSkill, setSelectedSkill] = useState(null);
-    const [addSkillMutation, { isLoading: addLoading }] = useAddSkillMutation();
-    const [updateSkillMutation, { isLoading: updateLoading }] = useUpdateSkillMutation();
-    const [deleteSkillMutation, { isLoading: deleteLoading }] = useDeleteSkillMutation();
+    const [addSkillMutation, { isLoading: addLoading, isSuccess: addSuccess }] = useAddSkillMutation();
+    const [updateSkillMutation, { isLoading: updateLoading, isSuccess: updateSuccess }] = useUpdateSkillMutation();
+    const [deleteSkillMutation, { isLoading: deleteLoading, isSuccess: deleteSuccess }] = useDeleteSkillMutation();
 
-    const debouncedSearch = useDebounce(searchTerm, 400);
-    const { data, isLoading, isFetching } = useGetAllSkillQuery({
+    const debouncedSearch = useDebounce(searchTerm, 600, setCurrentPage);
+    const { data, isLoading } = useGetAllSkillQuery({
         page: currentPage,
         limit,
         searchTerm: debouncedSearch,
@@ -51,9 +52,12 @@ const Skills = () => {
     const handleAddSkill = async (values) => {
         try {
             await addSkillMutation(values).unwrap();
-            setAddOpen(false);
+            if (addSuccess) {
+                setAddOpen(false);
+                SuccessToast("Skill added successfully")
+            }
         } catch (err) {
-            console.error("Add skill failed:", err);
+            ErrorToast(err?.data?.message)
         }
     };
 
@@ -61,10 +65,13 @@ const Skills = () => {
         if (!selectedSkill?._id) return;
         try {
             await updateSkillMutation({ id: selectedSkill._id, data: values }).unwrap();
-            setEditOpen(false);
-            setSelectedSkill(null);
+            if (updateSuccess) {
+                setEditOpen(false);
+                setSelectedSkill(null);
+                SuccessToast("Skill updated successfully")
+            }
         } catch (err) {
-            console.error("Update skill failed:", err);
+            ErrorToast(err?.data?.message)
         }
     };
 
@@ -72,10 +79,13 @@ const Skills = () => {
         if (!selectedSkill?._id) return;
         try {
             await deleteSkillMutation(selectedSkill._id).unwrap();
-            setConfirmOpen(false);
-            setSelectedSkill(null);
+            if (deleteSuccess) {
+                setConfirmOpen(false);
+                setSelectedSkill(null);
+                SuccessToast("Skill deleted successfully")
+            }
         } catch (err) {
-            console.error("Delete skill failed:", err);
+            ErrorToast(err?.data?.message)
         }
     };
 
@@ -120,7 +130,7 @@ const Skills = () => {
                 </div>
                 {/* Table */}
                 {
-                    isLoading || isFetching ? (
+                    isLoading ? (
                         <TableSkeleton columns={3} rows={10} />
                     ) : (
                         <SkillTable
@@ -135,7 +145,7 @@ const Skills = () => {
                     )
                 }
             </PageLayout>
-            
+
             {/* Add Skill Modal */}
             <AddSkillModal
                 isOpen={addOpen}

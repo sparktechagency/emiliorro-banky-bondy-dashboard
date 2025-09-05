@@ -15,8 +15,8 @@ const Users = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [limit] = useState(10);
 
-    const debouncedSearch = useDebounce(searchTerm, 400);
-    const { data, isLoading, isFetching } = useGetAllUserQuery({
+    const debouncedSearch = useDebounce(searchTerm, 600, setCurrentPage);
+    const { data, isLoading } = useGetAllUserQuery({
         page: currentPage,
         limit,
         searchTerm: debouncedSearch,
@@ -59,7 +59,7 @@ const Users = () => {
                     </div>
                 </div>
                 {/* Table */}
-                {isLoading || isFetching ? (
+                {isLoading ? (
                     <TableSkeleton />
                 ) : (
                     <UsersTable users={users} currentPage={currentPage} limit={limit} />

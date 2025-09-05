@@ -16,7 +16,7 @@ const Donors = () => {
     const [limit] = useState(10);
 
     const debouncedSearch = useDebounce(searchTerm, 400);
-    const { data, isLoading, isFetching } = useGetAllDonorQuery({
+    const { data, isLoading } = useGetAllDonorQuery({
         page: currentPage,
         limit,
         searchTerm: debouncedSearch,
@@ -59,7 +59,7 @@ const Donors = () => {
                 </div>
                 {/* Table */}
                 {
-                    isLoading || isFetching ? (
+                    isLoading ? (
                         <TableSkeleton />
                     ) : (
                         <DonorsTable donors={donors} currentPage={currentPage} limit={limit} />

@@ -65,10 +65,10 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
     return (
         <div className={`fixed top-0 left-0 z-40 h-screen bg-sidebar text-sidebar-foreground w-64 transition-transform duration-300 ease-in-out transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 flex flex-col`}>
             <div className=" p-[21.5px] flex items-center justify-center">
-                <div className="h-10 w-34 border-3 dark:border-white border-primary flex justify-center items-center gap-2 rounded-[100%]">
-                    <div className="w-3 h-3 rounded-full bg-[#22B14C]"></div>
-                    <div className="w-12 h-3 rounded-full border dark:border-white border-primary bg-[#FFF200]"></div>
-                    <div className="w-3 h-3 rounded-full bg-[#ED1C24]"></div>
+                <div className="h-10 w-32 border-2 dark:border-white border-primary flex justify-center items-center gap-2 rounded-[100%]">
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#22B14C]"></div>
+                    <div className="w-12 h-2 rounded-full border dark:border-white border-primary bg-[#FFF200]"></div>
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#ED1C24]"></div>
                 </div>
             </div>
             <ScrollArea className="h-[calc(100vh-149px)]">

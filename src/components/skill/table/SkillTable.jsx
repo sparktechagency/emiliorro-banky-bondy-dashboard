@@ -23,10 +23,10 @@ const SkillTable = ({ skills, onEdit, onDelete, updateLoading, deleteLoading, cu
                             <TableCell><Badge variant="outline">{skill.name}</Badge></TableCell>
                             <TableCell className="text-right space-x-2">
                                 <Button onClick={() => onEdit?.(skill)} variant="outline" size="icon" disabled={updateLoading}>
-                                    <SquarePen className="h-5 w-5" />
+                                    <SquarePen />
                                 </Button>
                                 <Button onClick={() => onDelete?.(skill)} variant="outline" size="icon" className="text-red-500" disabled={deleteLoading}>
-                                    <Trash className="h-5 w-5" />
+                                    <Trash />
                                 </Button>
                             </TableCell>
                         </TableRow>

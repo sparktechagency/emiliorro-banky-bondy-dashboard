@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from '../ui/skeleton';
 
 const HeaderSkeleton = ({ columns = 6 }) => (
@@ -40,13 +40,13 @@ const RowSkeleton = ({ columns = 6 }) => (
         >
           {idx === 1 ? (
             <>
-              <Skeleton className="h-10 w-10 rounded-full" />
-              <Skeleton className="h-4 w-32 rounded" />
+              <Skeleton className="h-9 w-9 rounded-full" />
+              <Skeleton className="h-4 w-24 rounded" />
             </>
           ) : idx === columns - 1 ? (
             <>
-              <Skeleton className="h-8 w-8 rounded" /> {/* View */}
-              <Skeleton className="h-8 w-8 rounded" /> {/* Delete */}
+              <Skeleton className="h-9 w-9 rounded" />
+              <Skeleton className="h-9 w-9 rounded" /> 
             </>
           ) : (
             <Skeleton className="h-4 w-full max-w-[160px] rounded" />
@@ -59,7 +59,7 @@ const RowSkeleton = ({ columns = 6 }) => (
 
 const TableSkeleton = ({ columns = 6, rows = 10 }) => {
   return (
-    <ScrollArea className="w-[calc(100vw-32px)] md:w-full rounded-lg whitespace-nowrap border">
+    <ScrollArea className="w-[calc(100vw-32px)] overflow-hidden overflow-x-auto md:w-full rounded-lg whitespace-nowrap">
         <Table>
           <TableHeader>
             <HeaderSkeleton columns={columns} />
@@ -70,7 +70,6 @@ const TableSkeleton = ({ columns = 6, rows = 10 }) => {
             ))}
           </TableBody>
         </Table>
-        <ScrollBar orientation='horizontal'/>
     </ScrollArea>
 
   );
