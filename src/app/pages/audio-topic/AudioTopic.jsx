@@ -34,7 +34,7 @@ const AudioTopic = () => {
     const [updateTopicMutation, { isLoading: updateLoading }] = useUpdateTopicMutation();
     const [deleteTopicMutation, { isLoading: deleteLoading }] = useDeleteTopicMutation();
 
-    const { data, isLoading } = useGetAllTopicQuery({
+    const { data, isLoading, isFetching } = useGetAllTopicQuery({
         page: currentPage,
         limit,
         searchTerm,
@@ -126,10 +126,12 @@ const AudioTopic = () => {
                     </div>
 
                     {/* Table */}
-                    {isLoading ? (
+                    {isLoading || isFetching ? (
                         <TableSkeleton columns={4} rows={10} />
                     ) : (
                         <TopicTable
+                            currentPage={currentPage}
+                            limit={limit}
                             topics={topics}
                             onEdit={(topic) => {
                                 setSelectedTopic(topic);

@@ -20,7 +20,7 @@ export default function AIReportTable({ rows = [] }) {
   };
 
   return (
-    <ScrollArea className="w-[calc(100vw-32px)] md:w-full rounded-lg overflow-hidden whitespace-nowrap">
+    <ScrollArea className="w-[calc(100vw-32px)] overflow-hidden overflow-x-auto md:w-full rounded-lg whitespace-nowrap">
       <Table>
         <TableHeader>
           <TableRow>

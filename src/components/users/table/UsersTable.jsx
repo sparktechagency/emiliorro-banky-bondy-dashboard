@@ -16,7 +16,7 @@ import { useGetAllSkillQuery } from '@/redux/feature/skill/skillApi';
 import { Badge } from '@/components/ui/badge';
 import UsersTableButton from '../button/UsersTableButton';
 
-const UsersTable = ({ users }) => {
+const UsersTable = ({ users, currentPage, limit }) => {
     useGetAllSkillQuery();
     const { skills } = useSelector((state) => state.skill);
     const [selectedUser, setSelectedUser] = useState(null);
@@ -34,7 +34,7 @@ const UsersTable = ({ users }) => {
 
     return (
         <>
-            <ScrollArea className="w-[calc(100vw-32px)] md:w-full rounded-lg overflow-hidden whitespace-nowrap">
+            <ScrollArea className="w-[calc(100vw-32px)] overflow-hidden overflow-x-auto md:w-full rounded-lg whitespace-nowrap">
                 <Table>
                     <TableHeader>
                         <TableRow>
@@ -50,7 +50,7 @@ const UsersTable = ({ users }) => {
                     <TableBody>
                         {users?.map((user, index) => (
                             <TableRow key={user.email}>
-                                <TableCell>{index + 1}</TableCell>
+                                <TableCell>{(currentPage - 1) * limit + index + 1}</TableCell>
                                 <TableCell>
                                     <div className="flex items-center gap-3">
                                         <Avatar className="border">

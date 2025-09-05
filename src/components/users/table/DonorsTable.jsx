@@ -16,7 +16,7 @@ import UserDetailsModal from '../modal/UserDetailsModal';
 import { useSelector } from 'react-redux';
 import { useGetAllSkillQuery } from '@/redux/feature/skill/skillApi';
 
-const DonorsTable = ({ donors }) => {
+const DonorsTable = ({ donors, currentPage, limit }) => {
     useGetAllSkillQuery();
     const { skills } = useSelector((state) => state.skill);
     const [selectedUser, setSelectedUser] = useState(null);
@@ -32,7 +32,7 @@ const DonorsTable = ({ donors }) => {
         setIsModalOpen(false);
     };
     return (
-        <ScrollArea className="w-[calc(100vw-32px)] md:w-full rounded-lg overflow-hidden whitespace-nowrap">
+        <ScrollArea className="w-[calc(100vw-32px)] overflow-hidden overflow-x-auto md:w-full rounded-lg whitespace-nowrap">
             <Table>
                 <TableHeader>
                     <TableRow>
@@ -47,7 +47,7 @@ const DonorsTable = ({ donors }) => {
                 <TableBody>
                     {donors.map((user, index) => (
                         <TableRow key={user?._id}>
-                            <TableCell>{index + 1}</TableCell>
+                            <TableCell>{(currentPage - 1) * limit + index + 1}</TableCell>
                             <TableCell>
                                 <div className="flex items-center gap-3">
                                     <Avatar className="border">

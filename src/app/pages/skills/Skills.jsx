@@ -17,7 +17,8 @@ import ConfirmationModal from "@/components/common/ConfirmationModal";
 const Skills = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const [limit] = useState(10);
+    const [limit] = useState(3);
+
     const [addOpen, setAddOpen] = useState(false);
     const [editOpen, setEditOpen] = useState(false);
     const [confirmOpen, setConfirmOpen] = useState(false);
@@ -27,7 +28,7 @@ const Skills = () => {
     const [deleteSkillMutation, { isLoading: deleteLoading }] = useDeleteSkillMutation();
 
     const debouncedSearch = useDebounce(searchTerm, 400);
-    const { data, isLoading } = useGetAllSkillQuery({
+    const { data, isLoading, isFetching } = useGetAllSkillQuery({
         page: currentPage,
         limit,
         searchTerm: debouncedSearch,
@@ -35,6 +36,48 @@ const Skills = () => {
 
     const skills = data?.data?.result || [];
     const totalPages = data?.data?.meta?.totalPage || 1;
+
+    // Handlers
+    const handleEditClick = (skill) => {
+        setSelectedSkill(skill);
+        setEditOpen(true);
+    };
+
+    const handleDeleteClick = (skill) => {
+        setSelectedSkill(skill);
+        setConfirmOpen(true);
+    };
+
+    const handleAddSkill = async (values) => {
+        try {
+            await addSkillMutation(values).unwrap();
+            setAddOpen(false);
+        } catch (err) {
+            console.error("Add skill failed:", err);
+        }
+    };
+
+    const handleEditSkill = async (values) => {
+        if (!selectedSkill?._id) return;
+        try {
+            await updateSkillMutation({ id: selectedSkill._id, data: values }).unwrap();
+            setEditOpen(false);
+            setSelectedSkill(null);
+        } catch (err) {
+            console.error("Update skill failed:", err);
+        }
+    };
+
+    const handleDeleteSkill = async () => {
+        if (!selectedSkill?._id) return;
+        try {
+            await deleteSkillMutation(selectedSkill._id).unwrap();
+            setConfirmOpen(false);
+            setSelectedSkill(null);
+        } catch (err) {
+            console.error("Delete skill failed:", err);
+        }
+    };
 
     return (
         <Suspense
@@ -74,17 +117,18 @@ const Skills = () => {
                             Add Skill
                         </Button>
                     </div>
-
                 </div>
                 {/* Table */}
                 {
-                    isLoading ? (
+                    isLoading || isFetching ? (
                         <TableSkeleton columns={3} rows={10} />
                     ) : (
                         <SkillTable
                             skills={skills}
-                            onEdit={(skill) => { setSelectedSkill(skill); setEditOpen(true); }}
-                            onDelete={(skill) => { setSelectedSkill(skill); setConfirmOpen(true); }}
+                            currentPage={currentPage}
+                            limit={limit}
+                            onEdit={handleEditClick}
+                            onDelete={handleDeleteClick}
                             updateLoading={updateLoading}
                             deleteLoading={deleteLoading}
                         />
@@ -97,10 +141,7 @@ const Skills = () => {
                 isOpen={addOpen}
                 onOpenChange={setAddOpen}
                 loading={addLoading}
-                onSubmit={async (values) => {
-                    await addSkillMutation(values);
-                    setAddOpen(false);
-                }}
+                onSubmit={handleAddSkill}
             />
             {/* Edit Skill Modal */}
             <EditSkillModal
@@ -108,13 +149,7 @@ const Skills = () => {
                 onOpenChange={setEditOpen}
                 skill={selectedSkill}
                 loading={updateLoading}
-                onSubmit={async (values) => {
-                    if (selectedSkill?._id) {
-                        await updateSkillMutation({ id: selectedSkill._id, data: values });
-                        setEditOpen(false);
-                        setSelectedSkill(null);
-                    }
-                }}
+                onSubmit={handleEditSkill}
             />
             {/* Delete Confirmation Modal */}
             <ConfirmationModal
@@ -124,13 +159,7 @@ const Skills = () => {
                 description={"Are you sure you want to delete this skill?"}
                 confirmText={"Delete"}
                 loading={deleteLoading}
-                onConfirm={async () => {
-                    if (selectedSkill?._id) {
-                        await deleteSkillMutation(selectedSkill._id);
-                        setConfirmOpen(false);
-                        setSelectedSkill(null);
-                    }
-                }}
+                onConfirm={handleDeleteSkill}
             />
         </Suspense>
     );
