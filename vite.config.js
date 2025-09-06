@@ -29,30 +29,6 @@ export default defineConfig({
     chunkSizeWarningLimit: 1500, // Increase chunk size warning limit to 1500KB
     rollupOptions: {
       output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (id.includes('react-dom')) {
-              return 'vendor_react-dom';
-            }
-            if (id.includes('react-router-dom')) {
-              return 'vendor_react-router-dom';
-            }
-            if (id.includes('@reduxjs/toolkit')) {
-              return 'vendor_redux-toolkit';
-            }
-            if (id.includes('zod')) {
-              return 'vendor_zod';
-            }
-            if (id.includes('react-hook-form')) {
-              return 'vendor_react-hook-form';
-            }
-            if (id.includes('react-quill')) {
-              return 'vendor_react-quill';
-            }
-            // Catch-all for other node_modules
-            return 'vendor'; 
-          }
-        }
       },
     },
   },
