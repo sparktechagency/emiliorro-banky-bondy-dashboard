@@ -1,5 +1,4 @@
 import { baseApi } from "../baseApi"
-import { setSkills } from "./skillSlice";
 
 const skillApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -20,19 +19,6 @@ const skillApi = baseApi.injectEndpoints({
                     method: "GET",
                     params,
                 };
-            },
-
-            async onQueryStarted(arg, { queryFulfilled, dispatch }) {
-                try {
-                    const { data } = await queryFulfilled;
-                    const skills = data?.data?.result?.map(cv => ({
-                        _id: cv._id,
-                        name: cv.name,
-                    })) || [];
-                    dispatch(setSkills(skills));
-                } catch (error) {
-                    console.log(error);
-                }
             },
             providesTags: ["SKILL"],
         }),

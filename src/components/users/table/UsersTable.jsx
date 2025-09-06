@@ -1,6 +1,3 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import UserDetailsModal from '../modal/UserDetailsModal';
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import {
     Table,
@@ -12,26 +9,11 @@ import {
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from '@/lib/utils';
-import { useGetAllSkillQuery } from '@/redux/feature/skill/skillApi';
 import { Badge } from '@/components/ui/badge';
-import UsersTableButton from '../button/UsersTableButton';
+import { Button } from '@/components/ui/button';
+import { Ban, Eye } from 'lucide-react';
 
-const UsersTable = ({ users, currentPage, limit }) => {
-    useGetAllSkillQuery();
-    const { skills } = useSelector((state) => state.skill);
-    const [selectedUser, setSelectedUser] = useState(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const handleViewUser = (user) => {
-        setSelectedUser(user);
-        setIsModalOpen(true);
-    };
-
-    const handleCloseModal = () => {
-        setSelectedUser(null);
-        setIsModalOpen(false);
-    };
-
+const UsersTable = ({ users, currentPage, limit, banLoading, onDelete, onView }) => {
     return (
         <>
             <ScrollArea className="w-[calc(100vw-32px)] overflow-hidden overflow-x-auto md:w-full rounded-lg whitespace-nowrap">
@@ -69,24 +51,18 @@ const UsersTable = ({ users, currentPage, limit }) => {
                                     </Badge>
                                 </TableCell>
                                 <TableCell className="text-right space-x-2">
-                                    <UsersTableButton
-                                        handleViewUser={handleViewUser}
-                                        user={user}
-                                    />
+                                    <Button variant="outline" size="icon" onClick={() => onView(user)}>
+                                        <Eye className="h-5 w-5" />
+                                    </Button>
+                                    <Button disabled={banLoading} onClick={() => onDelete(user)} variant="outline" size="icon" className="text-red-500">
+                                        <Ban className="h-5 w-5" />
+                                    </Button>
                                 </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </ScrollArea>
-            {selectedUser && (
-                <UserDetailsModal
-                    isOpen={isModalOpen}
-                    onClose={handleCloseModal}
-                    user={selectedUser}
-                    skills={skills}
-                />
-            )}
         </>
     );
 };

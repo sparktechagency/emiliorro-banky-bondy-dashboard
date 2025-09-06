@@ -6,14 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Calendar, Mail, Phone, MapPin, Info, Link as LinkIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
-const UserDetailsModal = ({ user, skills, isOpen, onClose }) => {
-    if (!user) return null;
-
+const UserDetailsModal = ({ user, isOpen, onOpenChange, skills }) => {
+    if (!user) return null
     const skillNames = getSkillsName(user.skills, skills);
     const displaySkills = (skillNames || []).filter(Boolean);
 
     return (
-        <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
+        <Dialog open={isOpen} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[425px] md:max-w-2xl p-0">
                 <DialogTitle className="sr-only">User Details</DialogTitle>
                 <div className="relative">
@@ -46,16 +45,16 @@ const UserDetailsModal = ({ user, skills, isOpen, onClose }) => {
                             <LinkIcon className="h-5 w-5 text-muted-foreground mt-1" />
                             <div className="flex flex-wrap gap-2">
                                 {user.socialLinks.map((link, index) => (
-                                        <a
-                                            key={index}
-                                            href={link}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-blue-500 hover:underline"
-                                        >
-                                            {getSocialIcon(link)}
-                                        </a>
-                                    ))}
+                                    <a
+                                        key={index}
+                                        href={link}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-500 hover:underline"
+                                    >
+                                        {getSocialIcon(link)}
+                                    </a>
+                                ))}
                             </div>
                         </div>
                     )}
@@ -96,11 +95,11 @@ export default UserDetailsModal;
 
 function InfoRow({ icon, label, value }) {
     return (
-      <div className="flex items-center gap-3">
-        {icon}
-        <span className="font-medium text-muted-foreground">{label}:</span>
-        <span className="truncate">{value || '—'}</span>
-      </div>
+        <div className="flex items-center gap-3">
+            {icon}
+            <span className="font-medium text-muted-foreground">{label}:</span>
+            <span className="truncate">{value || '—'}</span>
+        </div>
     )
-  }
-  
+}
+

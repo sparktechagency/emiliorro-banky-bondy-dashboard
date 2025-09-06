@@ -1,19 +1,21 @@
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import Title from "@/components/ui/Title";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import CustomPagination from "@/components/common/CustomPagination";
-import { useState } from "react";
 import PageLayout from "@/components/main-layout/PageLayout";
 import { useGetAllDonorQuery } from "@/redux/feature/user/userApi";
 import useDebounce from "@/hooks/usedebounce";
 import DonorsTable from "@/components/users/table/DonorsTable";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
+import UserDetailsModal from "@/components/users/modal/UserDetailsModal";
 
 const Donors = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [limit] = useState(10);
+    const [selectedDonor, setSelectedDonor] = useState(null);
+    const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
     const debouncedSearch = useDebounce(searchTerm, 400, setCurrentPage);
     const { data, isLoading, isFetching } = useGetAllDonorQuery({
@@ -24,6 +26,11 @@ const Donors = () => {
 
     const donors = data?.data?.result || [];
     const totalPages = data?.data?.meta?.totalPage || 1;
+
+    const handleViewDetails = (donor) => {
+        setSelectedDonor(donor);
+        setIsDetailsOpen(true);
+    };
 
     return (
         <Suspense
@@ -62,13 +69,22 @@ const Donors = () => {
                     isLoading || isFetching ? (
                         <TableSkeleton />
                     ) : (
-                        <DonorsTable donors={donors} currentPage={currentPage} limit={limit} />
+                        <DonorsTable 
+                            donors={donors} 
+                            currentPage={currentPage} 
+                            limit={limit}
+                            onViewDetails={handleViewDetails}
+                        />
                     )
                 }
             </PageLayout>
 
-            {/* UserDetailsModal */}
-            
+            {/* Donor Details Modal */}
+            <UserDetailsModal
+                user={selectedDonor}
+                isOpen={isDetailsOpen}
+                onOpenChange={setIsDetailsOpen}
+            />
         </Suspense>
     );
 };

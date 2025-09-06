@@ -1,30 +1,48 @@
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import Title from "@/components/ui/Title";
 import { Input } from "@/components/ui/input";
 import CustomPagination from "@/components/common/CustomPagination";
-import { useState } from "react";
 import PageLayout from "@/components/main-layout/PageLayout";
-import { useGetAllUserQuery } from "@/redux/feature/user/userApi";
+import { useBlockUserMutation, useGetAllUserQuery } from "@/redux/feature/user/userApi";
 import UsersTable from "@/components/users/table/UsersTable";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
 import { Search } from "lucide-react";
 import useDebounce from "@/hooks/usedebounce";
+import UserDetailsModal from "@/components/users/modal/UserDetailsModal";
+import ConfirmationModal from "@/components/common/ConfirmationModal";
+import { useGetAllSkillQuery } from "@/redux/feature/skill/skillApi";
 
 const Users = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [limit] = useState(10);
 
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+    const [confirmOpen, setConfirmOpen] = useState(false);
+
+    const { data: SkillData } = useGetAllSkillQuery();
+    const skills = SkillData?.data?.result;
+
+    const [toggleBanUserMutation, { isLoading: banLoading }] = useBlockUserMutation();
+    const toggleBanUser = async (userId) => {
+        try {
+            await toggleBanUserMutation(userId);
+        } finally {
+            setConfirmOpen(false);
+        }
+    };
+
     const debouncedSearch = useDebounce(searchTerm, 400, setCurrentPage);
-    const { data, isLoading, isFetching } = useGetAllUserQuery({
+    const { data, isLoading } = useGetAllUserQuery({
         page: currentPage,
         limit,
         searchTerm: debouncedSearch,
     });
 
-
     const users = data?.data?.result || [];
     const totalPages = data?.data?.meta?.totalPage || 1;
+
 
     return (
         <Suspense
@@ -59,12 +77,43 @@ const Users = () => {
                     </div>
                 </div>
                 {/* Table */}
-                {isLoading || isFetching ? (
+                {isLoading ? (
                     <TableSkeleton />
                 ) : (
-                    <UsersTable users={users} currentPage={currentPage} limit={limit} />
+                    <UsersTable
+                        users={users}
+                        currentPage={currentPage}
+                        limit={limit}
+                        banLoading={banLoading}
+                        onDelete={(user) => {
+                            setSelectedUser(user);
+                            setConfirmOpen(true);
+                        }}
+                        onView={(user) => {
+                            setSelectedUser(user);
+                            setIsDetailsOpen(true);
+                        }}
+                    />
                 )}
             </PageLayout>
+
+            {/* User Details Modal */}
+            <UserDetailsModal
+                isOpen={isDetailsOpen}
+                onOpenChange={setIsDetailsOpen}
+                user={selectedUser}
+                skills={skills}
+            />
+
+            <ConfirmationModal
+                isOpen={confirmOpen}
+                onOpenChange={setConfirmOpen}
+                title={`Confirm ${selectedUser?.user?.isBlocked ? 'Unblock' : 'Block'} User`}
+                description={selectedUser?.name ? `Are you sure you want to ${selectedUser?.user?.isBlocked ? 'unblock' : 'block'} (${selectedUser.name})?` : `Are you sure you want to ${selectedUser?.user?.isBlocked ? 'unblock' : 'block'} this user?`}
+                confirmText={selectedUser?.user?.isBlocked ? 'Unblock' : 'Block'}
+                loading={banLoading}
+                onConfirm={() => toggleBanUser(selectedUser.user._id)}
+            />
         </Suspense>
     );
 };
