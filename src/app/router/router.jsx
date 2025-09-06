@@ -16,7 +16,7 @@ import ForgetPassword from "@/app/pages/auth/forget-password/ForgetPassword";
 import ResetPassword from "@/app/pages/auth/reset-password/ResetPassword";
 import VerifyOtp from "@/app/pages/auth/verify-otp/VerifyOtp";
 import MakeAdmin from "@/app/pages/make-admin/MakeAdmin";
-import Contact from "@/app/pages/contact/Contact";
+import Contact from "@/app/pages/settings/contact/Contact";
 import Report from "@/app/pages/report/Report";
 
 export const router = createBrowserRouter([

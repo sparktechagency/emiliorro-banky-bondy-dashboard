@@ -16,7 +16,7 @@ const legalApi = baseApi.injectEndpoints({
         // GET TERMS
         getTerms: builder.query({
             query: () => ({
-                url: "/legal/get-terms",
+                url: "/manage/get-terms-conditions",
                 method: "GET",
             }),
             providesTags: ["LEGAL"],
@@ -25,7 +25,7 @@ const legalApi = baseApi.injectEndpoints({
         // GET PRIVACY POLICY
         getPrivacyPolicy: builder.query({
             query: () => ({
-                url: "/legal/get-privacy-policy",
+                url: "/manage/get-privacy-policy",
                 method: "GET",
             }),
             providesTags: ["LEGAL"],
@@ -34,7 +34,7 @@ const legalApi = baseApi.injectEndpoints({
         // GET CONTACT
         getContact: builder.query({
             query: () => ({
-                url: "/legal/get-contact",
+                url: "/manage/get-contact",
                 method: "GET",
             }),
             providesTags: ["LEGAL"],
@@ -43,7 +43,7 @@ const legalApi = baseApi.injectEndpoints({
         // ADD ABOUT
         addAbout: builder.mutation({
             query: (data) => ({
-                url: "/legal/add-about",
+                url: "/manage/add-about",
                 method: "POST",
                 body: data,
             }),
@@ -53,7 +53,7 @@ const legalApi = baseApi.injectEndpoints({
         // ADD TERMS
         addTerms: builder.mutation({
             query: (data) => ({
-                url: "/legal/add-terms",
+                url: "/manage/add-terms-conditions",
                 method: "POST",
                 body: data,
             }),
@@ -63,7 +63,7 @@ const legalApi = baseApi.injectEndpoints({
         // ADD PRIVACY POLICY
         addPrivacyPolicy: builder.mutation({
             query: (data) => ({
-                url: "/legal/add-privacy-policy",
+                url: "/manage/add-privacy-policy",
                 method: "POST",
                 body: data,
             }),
@@ -73,7 +73,7 @@ const legalApi = baseApi.injectEndpoints({
         // ADD CONTACT
         addContact: builder.mutation({
             query: (data) => ({
-                url: "/legal/add-contact",
+                url: "/manage/add-contact",
                 method: "POST",
                 body: data,
             }),
