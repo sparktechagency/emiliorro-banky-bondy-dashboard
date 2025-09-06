@@ -26,9 +26,14 @@ export default defineConfig({
     },
   },
   build: {
-    chunkSizeWarningLimit: 1500, // Increase chunk size warning limit to 1500KB
+    // chunkSizeWarningLimit: 1500, 
     rollupOptions: {
       output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'redux-vendor': ['@reduxjs/toolkit', 'react-redux'],
+          'jodit-react': ['jodit-react'],
+        },
       },
     },
   },

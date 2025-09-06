@@ -7,7 +7,7 @@ import { useAddPrivacyPolicyMutation, useGetPrivacyPolicyQuery } from "@/redux/f
 import { SuccessToast } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/theme/theme-provider";
-import LegalSkeleton from "@/components/legal/LegalSkeleton";
+const LegalSkeleton = lazy(()=> import('@/components/legal/LegalSkeleton'));
 
 const Privacy = () => {
     const [content, setContent] = useState("");

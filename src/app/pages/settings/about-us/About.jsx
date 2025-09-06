@@ -7,7 +7,7 @@ import { useAddAboutMutation, useGetAboutQuery } from "@/redux/feature/legal/leg
 import { SuccessToast } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/theme/theme-provider";
-import LegalSkeleton from "@/components/legal/LegalSkeleton";
+const LegalSkeleton = lazy(()=> import('@/components/legal/LegalSkeleton'));
 
 const About = () => {
     const [content, setContent] = useState("");
