@@ -20,10 +20,10 @@ export const ErrorToast = (msg) => {
 
 // Get Initials
 export const getInitials = (name) => {
-  if (!name) return "ER";
-  const parts = String(name).trim().split(/\s+/);
-  const first = parts[0]?.[0] || "E";
-  const second = parts[1]?.[0] || parts[0]?.[1] || "R";
+  if (!name) return "NA";
+  const parts = name.trim().split(/\s+/);
+  const first = parts[0]?.[0] || "N";
+  const second = parts[1]?.[0] || parts[0]?.[1] || "A";
   return (first + second).toUpperCase();
 };
 
@@ -33,15 +33,10 @@ export const getSkillsName = (skillsId, skills) => {
   return skillsId.map((skillId) => skills.find((skill) => skill._id === skillId)?.name);
 };
 
-// Format Date
+// Format date
 export const formatDate = (dateString) => {
-  if (!dateString) return "";
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
+  const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+  return new Date(dateString).toLocaleDateString('en-US', options);
 };
 
 // Get social Icon

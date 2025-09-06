@@ -39,16 +39,6 @@ const Skills = () => {
     const totalPages = data?.data?.meta?.totalPage || 1;
 
     // Handlers
-    const handleEditClick = (skill) => {
-        setSelectedSkill(skill);
-        setEditOpen(true);
-    };
-
-    const handleDeleteClick = (skill) => {
-        setSelectedSkill(skill);
-        setConfirmOpen(true);
-    };
-
     const handleAddSkill = async (values) => {
         try {
             await addSkillMutation(values).unwrap();
@@ -137,8 +127,14 @@ const Skills = () => {
                             skills={skills}
                             currentPage={currentPage}
                             limit={limit}
-                            onEdit={handleEditClick}
-                            onDelete={handleDeleteClick}
+                            onEdit={(skill) => {
+                                setSelectedSkill(skill);
+                                setEditOpen(true);
+                            }}
+                            onDelete={(skill) => {
+                                setSelectedSkill(skill);
+                                setConfirmOpen(true);
+                            }}
                             updateLoading={updateLoading}
                             deleteLoading={deleteLoading}
                         />

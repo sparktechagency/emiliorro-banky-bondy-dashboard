@@ -20,7 +20,6 @@ const AdminTable = ({ admins, currentPage, limit, onEdit, onDelete, updateLoadin
                         <TableHead>Name</TableHead>
                         <TableHead>Email</TableHead>
                         <TableHead>Phone Number</TableHead>
-                        <TableHead>Admin Type</TableHead>
                         <TableHead className="text-right">Action</TableHead>
                     </TableRow>
                 </TableHeader>
@@ -31,7 +30,6 @@ const AdminTable = ({ admins, currentPage, limit, onEdit, onDelete, updateLoadin
                             <TableCell className="font-medium">{admin.name}</TableCell>
                             <TableCell>{admin.email}</TableCell>
                             <TableCell>{admin.phoneNumber}</TableCell>
-                            <TableCell>Admin</TableCell>
                             <TableCell className="text-right space-x-2">
                                 <Button onClick={() => onEdit?.(admin)} variant="outline" size="icon" disabled={updateLoading}>
                                     <SquarePen />

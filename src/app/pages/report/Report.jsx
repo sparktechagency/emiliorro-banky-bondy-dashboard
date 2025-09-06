@@ -1,16 +1,45 @@
-import Title from "@/components/ui/Title";
 import { Suspense, useState } from "react";
 import PageLayout from "@/components/main-layout/PageLayout";
 import CustomPagination from "@/components/common/CustomPagination";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import UserReportTable from "@/components/report/user-report/UserReportTable";
-import MediaReportTable from "@/components/report/media-report/MediaReportTable";
-import AIReportTable from "@/components/report/ai-report/AIReportTable";
-import { userReports, mediaReports, aiReports } from "@/data/data";
-
+import Title from "@/components/ui/Title";
+import { useDeleteReportMutation, useGetAllReportQuery } from "@/redux/feature/report/reportApi";
+import ReportTable from "@/components/report/table/ReportTable";
+import { Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import useDebounce from "@/hooks/usedebounce";
+import TableSkeleton from "@/components/skeleton/TableSkeleton";
+import { ErrorToast, SuccessToast } from "@/lib/utils";
+import ConfirmationModal from "@/components/common/ConfirmationModal";
 const Report = () => {
+  const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 2;
+  const [limit] = useState(10);
+
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [selectedReport, setSelectedReport] = useState(null);
+  const [deleteReport, { isLoading: deleteLoading, isSuccess: deleteSuccess }] = useDeleteReportMutation();
+
+  const debouncedSearch = useDebounce(searchTerm, 600, setCurrentPage);
+  const { data, isLoading, isFetching } = useGetAllReportQuery({
+    page: currentPage,
+    limit,
+    searchTerm: debouncedSearch,
+  });
+
+  const reports = data?.data?.result || [];
+  const totalPages = data?.data?.meta?.totalPage || 1;
+
+  // Handler
+  const handleDelete = async () => {
+    try {
+      await deleteReport(selectedReport._id).unwrap();
+      if (deleteSuccess) {
+        SuccessToast("Report deleted successfully");
+      }
+    } catch (err) {
+      ErrorToast(err?.data?.message);
+    }
+  };
 
   return (
     <Suspense fallback={<div className="flex items-center justify-center h-64">Loading Report...</div>}>
@@ -27,28 +56,50 @@ const Report = () => {
           )
         }
       >
-        <Tabs defaultValue="user" className="w-full">
-          <div className="space-y-4">
-            <div className="flex flex-col md:flex-row md:items-start justify-between mb-2">
-              <Title title="Report management" />
-              <TabsList>
-                <TabsTrigger value="user">User Reports</TabsTrigger>
-                <TabsTrigger value="media">Media Reports</TabsTrigger>
-                <TabsTrigger value="ai">AI Reports</TabsTrigger>
-              </TabsList>
+        {/* Title and Search */}
+        <div className="flex flex-col md:flex-row md:items-start justify-between mb-4">
+          <Title title="Report Management" />
+          <div className="flex flex-col md:flex-row md:items-center gap-3 w-full md:w-auto">
+            <div className="relative w-full md:w-64">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Search skills..."
+                className="pl-9"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
-            <TabsContent value="user">
-              <UserReportTable rows={userReports} />
-            </TabsContent>
-            <TabsContent value="media">
-              <MediaReportTable rows={mediaReports} />
-            </TabsContent>
-            <TabsContent value="ai">
-              <AIReportTable rows={aiReports} />
-            </TabsContent>
           </div>
-        </Tabs>
+        </div>
+        {
+          isLoading || isFetching ? (
+            <TableSkeleton />
+          ) : (
+            <ReportTable
+              reports={reports}
+              currentPage={currentPage}
+              limit={limit}
+              deleteLoading={deleteLoading}
+              onDelete={(report) => {
+                setConfirmOpen(true);
+                setSelectedReport(report);
+              }}
+            />
+          )
+        }
       </PageLayout>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title={"Confirm Delete Report"}
+        description={"Are you sure you want to delete this report?"}
+        confirmText={"Delete"}
+        loading={deleteLoading}
+        onConfirm={handleDelete}
+      />
     </Suspense>
   );
 };
