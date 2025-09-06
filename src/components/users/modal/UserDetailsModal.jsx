@@ -30,12 +30,12 @@ const UserDetailsModal = ({ user, skills, isOpen, onClose }) => {
 
                 <div className="pt-8 text-center">
                     <h2 className="text-2xl font-bold">{user.name}</h2>
-                    <p className="text-muted-foreground">
+                    <p className="text-muted-foreground text-wrap">
                         {user.bio || "No bio available"}
                     </p>
                 </div>
 
-                <div className="p-6 grid gap-4 text-sm">
+                <div className="p-4 grid gap-4 text-sm">
                     <InfoRow icon={<Mail className="h-5 w-5" />} label="Email" value={user.email} />
                     <InfoRow icon={<Phone className="h-5 w-5" />} label="Phone" value={user.phone} />
                     <InfoRow icon={<Calendar className="h-5 w-5" />} label="Date of Birth" value={formatDate(user.dateOfBirth)} />
@@ -98,7 +98,7 @@ function InfoRow({ icon, label, value }) {
     return (
       <div className="flex items-center gap-3">
         {icon}
-        <span className="font-medium text-muted-foreground w-28">{label}:</span>
+        <span className="font-medium text-muted-foreground">{label}:</span>
         <span className="truncate">{value || '—'}</span>
       </div>
     )

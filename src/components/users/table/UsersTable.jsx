@@ -38,7 +38,7 @@ const UsersTable = ({ users, currentPage, limit }) => {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>S.No</TableHead>
+                            <TableHead>S.N</TableHead>
                             <TableHead>Name</TableHead>
                             <TableHead>Email</TableHead>
                             <TableHead>Phone Number</TableHead>

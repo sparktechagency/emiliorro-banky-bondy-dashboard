@@ -5,10 +5,21 @@ const reportApi = baseApi.injectEndpoints({
 
         // GET ALL REPORT
         getAllReport: builder.query({
-            query: () => ({
-                url: "/report/all-reports",
-                method: "GET",
-            }),
+            query: (args) => {
+                const params = new URLSearchParams();
+                if (args) {
+                    Object.entries(args).forEach(([key, value]) => {
+                        if (value) {
+                            params.append(key, value);
+                        }
+                    });
+                }
+                return {
+                    url: "/report/all-reports",
+                    method: "GET",
+                    params,
+                }
+            },
             providesTags: ["REPORT"],
         }),
 
