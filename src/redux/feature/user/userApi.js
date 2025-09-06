@@ -51,17 +51,7 @@ const userApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ["USER"],
         }),
-
-        // BLOCK UNBLOCK TOGGLE DONOR
-        blockDonor: builder.mutation({
-            query: (id) => ({
-                url: `/donate/block-unblock/${id}`,
-                method: "PATCH",
-            }),
-            invalidatesTags: ["USER"],
-        }),
-        
     })
 })
 
-export const { useGetAllUserQuery, useGetAllDonorQuery, useBlockUserMutation, useBlockDonorMutation } = userApi
+export const { useGetAllUserQuery, useGetAllDonorQuery, useBlockUserMutation } = userApi

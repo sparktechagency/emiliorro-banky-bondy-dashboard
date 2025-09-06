@@ -11,6 +11,7 @@ import useDebounce from "@/hooks/usedebounce";
 import UserDetailsModal from "@/components/users/modal/UserDetailsModal";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 import { useGetAllSkillQuery } from "@/redux/feature/skill/skillApi";
+import { ErrorToast, SuccessToast } from "@/lib/utils";
 
 const Users = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -24,12 +25,14 @@ const Users = () => {
     const { data: SkillData } = useGetAllSkillQuery();
     const skills = SkillData?.data?.result;
 
-    const [toggleBanUserMutation, { isLoading: banLoading }] = useBlockUserMutation();
-    const toggleBanUser = async (userId) => {
+    const [toggleBanUser, { isLoading: banLoading }] = useBlockUserMutation();
+    const handleToggleBanUser = async (userId) => {
         try {
-            await toggleBanUserMutation(userId);
-        } finally {
+            const response = await toggleBanUser(userId).unwrap();
+            SuccessToast(response?.message);
             setConfirmOpen(false);
+        } catch (error) {
+            ErrorToast(error?.data?.message);
         }
     };
 
@@ -112,7 +115,7 @@ const Users = () => {
                 description={selectedUser?.name ? `Are you sure you want to ${selectedUser?.user?.isBlocked ? 'unblock' : 'block'} (${selectedUser.name})?` : `Are you sure you want to ${selectedUser?.user?.isBlocked ? 'unblock' : 'block'} this user?`}
                 confirmText={selectedUser?.user?.isBlocked ? 'Unblock' : 'Block'}
                 loading={banLoading}
-                onConfirm={() => toggleBanUser(selectedUser.user._id)}
+                onConfirm={() => handleToggleBanUser(selectedUser.user._id)}
             />
         </Suspense>
     );

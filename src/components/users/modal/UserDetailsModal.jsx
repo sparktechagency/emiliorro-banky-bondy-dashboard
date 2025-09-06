@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dialog, DialogContent, DialogFooter, DialogClose, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogClose, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDate, getInitials, getSkillsName, getSocialIcon } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -15,6 +15,7 @@ const UserDetailsModal = ({ user, isOpen, onOpenChange, skills }) => {
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[425px] md:max-w-2xl p-0">
                 <DialogTitle className="sr-only">User Details</DialogTitle>
+                <DialogDescription className="sr-only">User Details</DialogDescription>
                 <div className="relative">
                     <img
                         src={user.cover_image || "https://placehold.co/600x200"}

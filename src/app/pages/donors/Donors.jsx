@@ -9,6 +9,7 @@ import useDebounce from "@/hooks/usedebounce";
 import DonorsTable from "@/components/users/table/DonorsTable";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
 import UserDetailsModal from "@/components/users/modal/UserDetailsModal";
+import { useGetAllSkillQuery } from "@/redux/feature/skill/skillApi";
 
 const Donors = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -16,9 +17,11 @@ const Donors = () => {
     const [limit] = useState(10);
     const [selectedDonor, setSelectedDonor] = useState(null);
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+    const { data: SkillData } = useGetAllSkillQuery();
+    const skills = SkillData?.data?.result;
 
     const debouncedSearch = useDebounce(searchTerm, 400, setCurrentPage);
-    const { data, isLoading, isFetching } = useGetAllDonorQuery({
+    const { data, isLoading } = useGetAllDonorQuery({
         page: currentPage,
         limit,
         searchTerm: debouncedSearch,
@@ -26,11 +29,6 @@ const Donors = () => {
 
     const donors = data?.data?.result || [];
     const totalPages = data?.data?.meta?.totalPage || 1;
-
-    const handleViewDetails = (donor) => {
-        setSelectedDonor(donor);
-        setIsDetailsOpen(true);
-    };
 
     return (
         <Suspense
@@ -65,26 +63,29 @@ const Donors = () => {
                     </div>
                 </div>
                 {/* Table */}
-                {
-                    isLoading || isFetching ? (
-                        <TableSkeleton />
-                    ) : (
-                        <DonorsTable 
-                            donors={donors} 
-                            currentPage={currentPage} 
-                            limit={limit}
-                            onViewDetails={handleViewDetails}
-                        />
-                    )
-                }
+                {isLoading ? (
+                    <TableSkeleton />
+                ) : (
+                    <DonorsTable 
+                        donors={donors} 
+                        currentPage={currentPage} 
+                        limit={limit}
+                        onView={(donor) => {
+                            setSelectedDonor(donor);
+                            setIsDetailsOpen(true);
+                        }}
+                    />
+                )}
             </PageLayout>
 
             {/* Donor Details Modal */}
             <UserDetailsModal
-                user={selectedDonor}
                 isOpen={isDetailsOpen}
                 onOpenChange={setIsDetailsOpen}
+                user={selectedDonor?.user || selectedDonor}
+                skills={skills}
             />
+
         </Suspense>
     );
 };
