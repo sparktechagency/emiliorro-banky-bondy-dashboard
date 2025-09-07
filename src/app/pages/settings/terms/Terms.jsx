@@ -1,4 +1,4 @@
-import { Suspense, useMemo } from "react";
+import { lazy, Suspense, useMemo } from "react";
 import Title from "@/components/ui/Title";
 import PageLayout from "@/components/main-layout/PageLayout";
 import JoditEditor from "jodit-react";
