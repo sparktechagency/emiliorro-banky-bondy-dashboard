@@ -1,7 +1,6 @@
 'use client';
 import { Suspense, useState } from "react";
 import { Card } from "@/components/ui/card";
-import ProfileHeader from "@/components/profile/ProfileHeader";
 import ProfileSummary from "@/components/profile/ProfileSummary";
 import EditProfileForm from "@/components/profile/EditProfileForm";
 import ChangePasswordForm from "@/components/profile/ChangePasswordForm";
@@ -11,6 +10,7 @@ import {
     TabsTrigger,
     TabsContent,
 } from "@/components/ui/tabs";
+import Title from "@/components/ui/Title";
 
 const Profile = () => {
     const [pendingImage, setPendingImage] = useState(null);
@@ -20,7 +20,9 @@ const Profile = () => {
         <Suspense fallback={<div className="flex items-center justify-center h-64">Loading Profile...</div>}>
             <div className="space-y-4">
                 {/* Page Header */}
-                <ProfileHeader />
+                <div className="flex flex-col md:flex-row md:items-start justify-between mb-4">
+                    <Title title="Admin Profile" />
+                </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
                     {/* Left Column */}

@@ -37,7 +37,7 @@ const ProfileSummary = ({ previewUrl, onSelectImage }) => {
               <button
                 type="button"
                 onClick={onPickImage}
-                className="absolute -bottom-1 -right-1 p-1 rounded-full border bg-background shadow"
+                className="absolute -bottom-1 -right-1 p-1 rounded-full border bg-background shadow cursor-pointer"
                 aria-label="Change profile image"
                 title="Choose profile image"
               >
