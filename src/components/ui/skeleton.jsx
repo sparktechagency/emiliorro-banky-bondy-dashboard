@@ -1,15 +1,14 @@
 import { cn } from "@/lib/utils"
+import { forwardRef } from "react";
 
-function Skeleton({
-  className,
-  ...props
-}) {
+const Skeleton = forwardRef(({ className, ...props }, ref) => {
   return (
     <div
+      ref={ref}
       data-slot="skeleton"
       className={cn("bg-accent animate-pulse rounded-md", className)}
       {...props} />
   );
-}
+})
 
 export { Skeleton }
