@@ -13,7 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Ban, Eye } from 'lucide-react';
 
-const UsersTable = ({ users, currentPage, limit, banLoading, onDelete, onView }) => {
+const UsersTable = ({ users, page, limit, banLoading, onDelete, onView }) => {
     return (
         <>
             <ScrollArea className="w-[calc(100vw-32px)] overflow-hidden overflow-x-auto md:w-full rounded-lg whitespace-nowrap">
@@ -32,7 +32,7 @@ const UsersTable = ({ users, currentPage, limit, banLoading, onDelete, onView })
                     <TableBody>
                         {users?.map((user, index) => (
                             <TableRow key={user.email}>
-                                <TableCell>{(currentPage - 1) * limit + index + 1}</TableCell>
+                                <TableCell>{(page - 1) * limit + index + 1}</TableCell>
                                 <TableCell>
                                     <div className="flex items-center gap-3">
                                         <Avatar className="border">

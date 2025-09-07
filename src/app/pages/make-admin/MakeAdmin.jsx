@@ -3,7 +3,6 @@ import Title from "@/components/ui/Title";
 import PageLayout from "@/components/main-layout/PageLayout";
 import CustomPagination from "@/components/common/CustomPagination";
 import { Plus, Search } from "lucide-react";
-import useDebounce from "@/hooks/usedebounce";
 import { Input } from "@/components/ui/input";
 import AdminTable from "@/components/admin/table/AdminTable";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
@@ -13,21 +12,19 @@ import AddAdminModal from "@/components/admin/modal/AddAdminModal";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 import EditAdminModal from "@/components/admin/modal/EditAdminModal";
 import { ErrorToast, SuccessToast } from "@/lib/utils";
+import usePaginatedSearchQuery from "@/hooks/usePaginatedSearchQuery";
 
 const MakeAdmin = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [limit] = useState(10);
-
-  const debouncedSearch = useDebounce(searchTerm, 400, setCurrentPage);
-  const { data, isLoading } = useGetAllAdminQuery({
-    page: currentPage,
-    limit,
-    searchTerm: debouncedSearch,
-  });
-
-  const admins = data?.data?.result || [];
-  const totalPages = data?.data?.meta?.totalPage || 1;
+  const {
+          searchTerm,
+          setSearchTerm,
+          currentPage,
+          setCurrentPage,
+          items: admins,
+          totalPages,
+          page,
+          isLoading,
+        } = usePaginatedSearchQuery(useGetAllAdminQuery);
 
   const [selectedAdmin, setSelectedAdmin] = useState(null);
   const [addOpen, setAddOpen] = useState(false);
@@ -38,16 +35,6 @@ const MakeAdmin = () => {
   const [deleteAdminMutation, { isLoading: deleteLoading, isSuccess: deleteSuccess }] = useDeleteAdminMutation();
 
   // Handlers
-  const handleEditClick = (admin) => {
-    setSelectedAdmin(admin);
-    setEditOpen(true);
-  };
-
-  const handleDeleteClick = (admin) => {
-    setSelectedAdmin(admin);
-    setConfirmOpen(true);
-  };
-
   const handleAddAdmin = async (data) => {
     try {
       await addAdminMutation(data).unwrap();
@@ -130,12 +117,18 @@ const MakeAdmin = () => {
           ) : (
             <AdminTable
               admins={admins}
-              currentPage={currentPage}
-              limit={limit}
+              page={page}
+              limit={10}
               updateLoading={updateLoading}
               deleteLoading={deleteLoading}
-              onEdit={handleEditClick}
-              onDelete={handleDeleteClick}
+              onEdit={(admin) => {
+                setSelectedAdmin(admin);
+                setEditOpen(true);
+              }}
+              onDelete={(admin) => {
+                setSelectedAdmin(admin);
+                setConfirmOpen(true);
+              }}
             />
           )
         }

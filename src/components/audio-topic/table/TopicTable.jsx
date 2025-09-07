@@ -3,7 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { SquarePen, Trash } from "lucide-react";
 
-const TopicTable = ({ topics, onEdit, onDelete, currentPage, limit }) => {
+const TopicTable = ({ topics, onEdit, onDelete, page, limit }) => {
     return (
         <ScrollArea className="w-[calc(100vw-32px)] overflow-hidden overflow-x-auto md:w-full rounded-lg whitespace-nowrap">
             <Table>
@@ -18,7 +18,7 @@ const TopicTable = ({ topics, onEdit, onDelete, currentPage, limit }) => {
                 <TableBody>
                     {topics.map((topic, index) => (
                         <TableRow key={topic._id}>
-                            <TableCell>{(currentPage - 1) * limit + index + 1}</TableCell>
+                            <TableCell>{(page - 1) * limit + index + 1}</TableCell>
                             <TableCell>{topic.name}</TableCell>
                             <TableCell>
                                 <img

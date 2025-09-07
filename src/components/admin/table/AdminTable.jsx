@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { SquarePen, Trash2 } from "lucide-react";
 
-const AdminTable = ({ admins, currentPage, limit, onEdit, onDelete, updateLoading, deleteLoading }) => {
+const AdminTable = ({ admins, page, limit, onEdit, onDelete, updateLoading, deleteLoading }) => {
     return (
         <ScrollArea className="w-[calc(100vw-32px)] overflow-hidden overflow-x-auto md:w-full rounded-lg whitespace-nowrap">
             <Table>
@@ -26,7 +26,7 @@ const AdminTable = ({ admins, currentPage, limit, onEdit, onDelete, updateLoadin
                 <TableBody>
                     {admins.map((admin, index) => (
                         <TableRow key={`${admin.email}-${index}`}>
-                            <TableCell>{(currentPage - 1) * limit + index + 1}</TableCell>
+                            <TableCell>{(page - 1) * limit + index + 1}</TableCell>
                             <TableCell className="font-medium">{admin.name}</TableCell>
                             <TableCell>{admin.email}</TableCell>
                             <TableCell>{admin.phoneNumber}</TableCell>

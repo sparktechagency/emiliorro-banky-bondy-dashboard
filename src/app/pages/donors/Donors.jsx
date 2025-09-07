@@ -1,34 +1,29 @@
-import { Suspense, useState } from "react";
+import { Suspense, useState, lazy } from "react";
 import Title from "@/components/ui/Title";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import CustomPagination from "@/components/common/CustomPagination";
 import PageLayout from "@/components/main-layout/PageLayout";
 import { useGetAllDonorQuery } from "@/redux/feature/user/userApi";
-import useDebounce from "@/hooks/usedebounce";
 import DonorsTable from "@/components/users/table/DonorsTable";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
-import UserDetailsModal from "@/components/users/modal/UserDetailsModal";
-import { useGetAllSkillQuery } from "@/redux/feature/skill/skillApi";
+const UserDetailsModal = lazy(() => import("@/components/users/modal/UserDetailsModal"));
+import usePaginatedSearchQuery from "@/hooks/usePaginatedSearchQuery";
 
 const Donors = () => {
-    const [searchTerm, setSearchTerm] = useState("");
-    const [currentPage, setCurrentPage] = useState(1);
-    const [limit] = useState(10);
+    const {
+        searchTerm,
+        setSearchTerm,
+        currentPage,
+        setCurrentPage,
+        items: donors,
+        totalPages,
+        page,
+        isLoading,
+    } = usePaginatedSearchQuery(useGetAllDonorQuery);
+
     const [selectedDonor, setSelectedDonor] = useState(null);
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-    const { data: SkillData } = useGetAllSkillQuery();
-    const skills = SkillData?.data?.result;
-
-    const debouncedSearch = useDebounce(searchTerm, 400, setCurrentPage);
-    const { data, isLoading } = useGetAllDonorQuery({
-        page: currentPage,
-        limit,
-        searchTerm: debouncedSearch,
-    });
-
-    const donors = data?.data?.result || [];
-    const totalPages = data?.data?.meta?.totalPage || 1;
 
     return (
         <Suspense
@@ -66,10 +61,10 @@ const Donors = () => {
                 {isLoading ? (
                     <TableSkeleton />
                 ) : (
-                    <DonorsTable 
-                        donors={donors} 
-                        currentPage={currentPage} 
-                        limit={limit}
+                    <DonorsTable
+                        donors={donors}
+                        page={page}
+                        limit={10}
                         onView={(donor) => {
                             setSelectedDonor(donor);
                             setIsDetailsOpen(true);
@@ -83,7 +78,7 @@ const Donors = () => {
                 isOpen={isDetailsOpen}
                 onOpenChange={setIsDetailsOpen}
                 user={selectedDonor?.user || selectedDonor}
-                skills={skills}
+                donors={donors}
             />
 
         </Suspense>

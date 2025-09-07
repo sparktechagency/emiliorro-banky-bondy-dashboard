@@ -18,7 +18,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-const ReportTable = ({ reports, currentPage, limit, deleteLoading, onDelete }) => {
+const ReportTable = ({ reports, page, limit, deleteLoading, onDelete }) => {
   return (
     <ScrollArea className="w-[calc(100vw-32px)] overflow-hidden overflow-x-auto md:w-full rounded-lg">
       <Table>
@@ -36,7 +36,7 @@ const ReportTable = ({ reports, currentPage, limit, deleteLoading, onDelete }) =
         <TableBody>
           {reports.map((report, index) => (
             <TableRow key={report._id}>
-              <TableCell>{(currentPage - 1) * limit + index + 1}</TableCell>
+              <TableCell>{(page - 1) * limit + index + 1}</TableCell>
 
               <TableCell>
                 <div className="flex items-center gap-2">

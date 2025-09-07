@@ -6,28 +6,25 @@ import { useDeleteReportMutation, useGetAllReportQuery } from "@/redux/feature/r
 import ReportTable from "@/components/report/table/ReportTable";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import useDebounce from "@/hooks/usedebounce";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
 import { ErrorToast, SuccessToast } from "@/lib/utils";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
+import usePaginatedSearchQuery from "@/hooks/usePaginatedSearchQuery";
 const Report = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [limit] = useState(10);
+  const {
+    searchTerm,
+    setSearchTerm,
+    currentPage,
+    setCurrentPage,
+    items: reports,
+    totalPages,
+    page,
+    isLoading,
+  } = usePaginatedSearchQuery(useGetAllReportQuery);
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [selectedReport, setSelectedReport] = useState(null);
   const [deleteReport, { isLoading: deleteLoading, isSuccess: deleteSuccess }] = useDeleteReportMutation();
-
-  const debouncedSearch = useDebounce(searchTerm, 600, setCurrentPage);
-  const { data, isLoading, isFetching } = useGetAllReportQuery({
-    page: currentPage,
-    limit,
-    searchTerm: debouncedSearch,
-  });
-
-  const reports = data?.data?.result || [];
-  const totalPages = data?.data?.meta?.totalPage || 1;
 
   // Handler
   const handleDelete = async () => {
@@ -73,13 +70,13 @@ const Report = () => {
           </div>
         </div>
         {
-          isLoading || isFetching ? (
+          isLoading ? (
             <TableSkeleton />
           ) : (
             <ReportTable
               reports={reports}
-              currentPage={currentPage}
-              limit={limit}
+              page={page}
+              limit={10}
               deleteLoading={deleteLoading}
               onDelete={(report) => {
                 setConfirmOpen(true);

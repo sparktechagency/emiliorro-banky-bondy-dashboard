@@ -7,16 +7,23 @@ import { useBlockUserMutation, useGetAllUserQuery } from "@/redux/feature/user/u
 import UsersTable from "@/components/users/table/UsersTable";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
 import { Search } from "lucide-react";
-import useDebounce from "@/hooks/usedebounce";
 import UserDetailsModal from "@/components/users/modal/UserDetailsModal";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 import { useGetAllSkillQuery } from "@/redux/feature/skill/skillApi";
 import { ErrorToast, SuccessToast } from "@/lib/utils";
+import usePaginatedSearchQuery from "@/hooks/usePaginatedSearchQuery";
 
 const Users = () => {
-    const [searchTerm, setSearchTerm] = useState("");
-    const [currentPage, setCurrentPage] = useState(1);
-    const [limit] = useState(10);
+    const {
+        searchTerm,
+        setSearchTerm,
+        currentPage,
+        setCurrentPage,
+        items: users,
+        totalPages,
+        page,
+        isLoading,
+      } = usePaginatedSearchQuery(useGetAllUserQuery);
 
     const [selectedUser, setSelectedUser] = useState(null);
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
@@ -35,17 +42,6 @@ const Users = () => {
             ErrorToast(error?.data?.message);
         }
     };
-
-    const debouncedSearch = useDebounce(searchTerm, 400, setCurrentPage);
-    const { data, isLoading } = useGetAllUserQuery({
-        page: currentPage,
-        limit,
-        searchTerm: debouncedSearch,
-    });
-
-    const users = data?.data?.result || [];
-    const totalPages = data?.data?.meta?.totalPage || 1;
-
 
     return (
         <Suspense
@@ -85,8 +81,8 @@ const Users = () => {
                 ) : (
                     <UsersTable
                         users={users}
-                        currentPage={currentPage}
-                        limit={limit}
+                        page={page}
+                        limit={10}
                         banLoading={banLoading}
                         onDelete={(user) => {
                             setSelectedUser(user);

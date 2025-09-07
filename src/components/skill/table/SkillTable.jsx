@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { SquarePen, Trash } from "lucide-react";
 
 
-const SkillTable = ({ skills, onEdit, onDelete, updateLoading, deleteLoading, currentPage, limit }) => {
+const SkillTable = ({ skills, onEdit, onDelete, updateLoading, deleteLoading, page, limit }) => {
     return (
         <ScrollArea className="w-[calc(100vw-32px)] overflow-hidden overflow-x-auto md:w-full rounded-lg whitespace-nowrap">
             <Table>
@@ -19,7 +19,7 @@ const SkillTable = ({ skills, onEdit, onDelete, updateLoading, deleteLoading, cu
                 <TableBody>
                     {skills.map((skill, index) => (
                         <TableRow key={skill._id}>
-                            <TableCell>{(currentPage - 1) * limit + index + 1}</TableCell>
+                            <TableCell>{(page - 1) * limit + index + 1}</TableCell>
                             <TableCell><Badge variant="outline">{skill.name}</Badge></TableCell>
                             <TableCell className="text-right space-x-2">
                                 <Button onClick={() => onEdit?.(skill)} variant="outline" size="icon" disabled={updateLoading}>

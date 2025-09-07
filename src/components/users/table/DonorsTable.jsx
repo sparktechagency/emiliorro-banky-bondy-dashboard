@@ -13,7 +13,7 @@ import { getInitials } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
 
-const DonorsTable = ({ donors, currentPage, limit, onView }) => {
+const DonorsTable = ({ donors, page, limit, onView }) => {
     return (
         <ScrollArea className="w-[calc(100vw-32px)] overflow-hidden overflow-x-auto md:w-full rounded-lg whitespace-nowrap">
             <Table>
@@ -30,7 +30,7 @@ const DonorsTable = ({ donors, currentPage, limit, onView }) => {
                 <TableBody>
                     {donors.map((user, index) => (
                         <TableRow key={user?._id}>
-                            <TableCell>{(currentPage - 1) * limit + index + 1}</TableCell>
+                            <TableCell>{(page - 1) * limit + index + 1}</TableCell>
                             <TableCell>
                                 <div className="flex items-center gap-3">
                                     <Avatar className="border">

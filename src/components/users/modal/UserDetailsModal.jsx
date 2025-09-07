@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Dialog, DialogContent, DialogFooter, DialogClose, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDate, getInitials, getSkillsName, getSocialIcon } from '@/lib/utils';
@@ -12,6 +12,7 @@ const UserDetailsModal = ({ user, isOpen, onOpenChange, skills }) => {
     const displaySkills = (skillNames || []).filter(Boolean);
 
     return (
+        <Suspense fallback={<div>Loading...</div>}>
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[425px] md:max-w-2xl p-0">
                 <DialogTitle className="sr-only">User Details</DialogTitle>
@@ -20,7 +21,7 @@ const UserDetailsModal = ({ user, isOpen, onOpenChange, skills }) => {
                     <img
                         src={user.cover_image || "https://placehold.co/600x200"}
                         alt="Cover"
-                        className="w-full h-32 object-cover rounded-t-lg"
+                        className="w-[100%] h-32 object-cover rounded-t-lg"
                     />
                     <Avatar className="absolute top-16 left-1/2 -translate-x-1/2 w-24 h-24 border-4 border-white">
                         <AvatarImage src={user.profile_image} alt={user.name} />
@@ -88,7 +89,7 @@ const UserDetailsModal = ({ user, isOpen, onOpenChange, skills }) => {
                 </DialogFooter>
             </DialogContent>
         </Dialog>
-
+      </Suspense>
     );
 };
 
