@@ -16,6 +16,7 @@ const About = () => {
     const [isLoading, setIsLoading] = useState(true);
 
     const { data: about, isLoading: aboutLoading } = useGetAboutQuery();
+    console.log(about);
 
     const [addAbout, { isLoading: addAboutLoading }] = useAddAboutMutation();
 

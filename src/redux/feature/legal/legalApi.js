@@ -7,7 +7,7 @@ const legalApi = baseApi.injectEndpoints({
         // GET ABOUT
         getAbout: builder.query({
             query: () => ({
-                url: "/legal/get-about",
+                url: "/manage/get-about-us",
                 method: "GET",
             }),
             providesTags: ["LEGAL"],
@@ -43,7 +43,7 @@ const legalApi = baseApi.injectEndpoints({
         // ADD ABOUT
         addAbout: builder.mutation({
             query: (data) => ({
-                url: "/manage/add-about",
+                url: "/manage/add-about-us",
                 method: "POST",
                 body: data,
             }),

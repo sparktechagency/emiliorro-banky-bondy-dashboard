@@ -8,8 +8,7 @@ import {
     BadgeInfo,
     ReceiptText,
     GlobeLock,
-    Handshake,
-    ContactRound
+    Handshake
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
@@ -37,7 +36,6 @@ const settingsSubItems = [
     { name: "About Us", icon: BadgeInfo, href: "/settings/about" },
     { name: "Terms & Condition", icon: ReceiptText, href: "/settings/terms" },
     { name: "Privacy Policy", icon: GlobeLock, href: "/settings/privacy" },
-    { name: "Contact Us", icon: ContactRound, href: "settings/contact-us" },
 ];
 
 const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {

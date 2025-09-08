@@ -16,7 +16,6 @@ const AudioTopic = lazy(()=> import('@/app/pages/audio-topic/AudioTopic'));
 const Report = lazy(()=> import('@/app/pages/report/Report'));
 const Notification = lazy(()=> import('@/app/pages/notifications/Notification'));
 const Profile = lazy(()=> import('@/app/pages/settings/profile/Profile'));
-const Contact = lazy(()=> import('@/app/pages/settings/contact/Contact'));
 const Privacy = lazy(()=> import('@/app/pages/settings/privacy/Privacy'));
 const Terms = lazy(()=> import('@/app/pages/settings/terms/Terms'));
 const About = lazy(()=> import('@/app/pages/settings/about-us/About'));
@@ -73,11 +72,7 @@ export const router = createBrowserRouter([
             {
                 path: "settings/privacy",
                 element: <Privacy />
-            },
-            {
-                path: "settings/contact-us",
-                element: <Contact />
-            },
+            }
         ]
     },
     {

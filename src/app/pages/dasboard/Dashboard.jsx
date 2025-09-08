@@ -3,6 +3,7 @@ import AudioDistributionChart from "@/components/dashboard/AudioDistributionChar
 import BondOverview from "@/components/dashboard/BondOverview";
 import DashboardStats from "@/components/dashboard/DashboardStats";
 import DonorGrowthChart from "@/components/dashboard/DonorGrowthChart";
+import EarningGrowthChart from "@/components/dashboard/EarningGrowthChart";
 import InstitutionOverview from "@/components/dashboard/InstitutionOverview";
 import UserGrowthChart from "@/components/dashboard/UserGrowthChart";
 import AudioDistributionChartSkeleton from "@/components/dashboard/skeleton/AudioDistributionChartSkeleton";
@@ -13,6 +14,7 @@ import {
     useGetDashboardAudioChartQuery,
     useGetDashboardBondChartQuery,
     useGetDashboardDonorChartQuery,
+    useGetDashboardEarningChartQuery,
     useGetDashboardInstitutionChartQuery,
     useGetDashboardStatsQuery,
     useGetDashboardUserChartQuery
@@ -23,6 +25,7 @@ const Dashboard = () => {
     // Year State
     const [userYear, setUserYear] = useState(new Date().getFullYear());
     const [donorYear, setDonorYear] = useState(new Date().getFullYear());
+    const [earningYear, setEarningYear] = useState(new Date().getFullYear());
     const [bondYear, setBondYear] = useState(new Date().getFullYear());
     const [institutionYear, setInstitutionYear] = useState(new Date().getFullYear());
 
@@ -31,6 +34,7 @@ const Dashboard = () => {
     const { data: userGrowthData, isLoading: isUserGrowthLoading } = useGetDashboardUserChartQuery({ year: userYear });
     const { data: donorGrowthData, isLoading: isDonorGrowthLoading } = useGetDashboardDonorChartQuery({ year: donorYear });
     const { data: audioDistributionData, isLoading: isAudioDistributionLoading } = useGetDashboardAudioChartQuery();
+    const { data: earningData, isLoading: isEarningLoading } = useGetDashboardEarningChartQuery({ year: earningYear });
     const { data: bondOverviewData, isLoading: isBondOverviewLoading } = useGetDashboardBondChartQuery({ year: bondYear });
     const { data: institutionOverviewData, isLoading: isInstitutionOverviewLoading } = useGetDashboardInstitutionChartQuery({ year: institutionYear });
 
@@ -39,15 +43,17 @@ const Dashboard = () => {
     const handleDonorYearChange = (year) => setDonorYear(parseInt(year));
     const handleBondYearChange = (year) => setBondYear(parseInt(year));
     const handleInstitutionYearChange = (year) => setInstitutionYear(parseInt(year));
+    const handleEarningYearChange = (year) => setEarningYear(parseInt(year));
 
     return (
         <Suspense fallback={
             <>
                 <DashboardStatsSkeleton />
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
                     <ChartSkeleton />
                     <ChartSkeleton />
                     <AudioDistributionChartSkeleton />
+                    <ChartSkeleton />
                     <ChartSkeleton />
                     <ChartSkeleton />
                 </div>
@@ -58,39 +64,46 @@ const Dashboard = () => {
                 {isStatsLoading ? <DashboardStatsSkeleton /> : <DashboardStats data={dashboardStatsData?.data} />}
 
                 {/* Charts */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-                    {isUserGrowthLoading ? 
-                        <ChartSkeleton /> : 
-                        <UserGrowthChart 
-                        userGrowthChartData={userGrowthData?.data} 
-                        onYearChange={handleUserYearChange} 
-                        selectedYear={userYear} 
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+                    {isUserGrowthLoading ?
+                        <ChartSkeleton /> :
+                        <UserGrowthChart
+                            userGrowthChartData={userGrowthData?.data}
+                            onYearChange={handleUserYearChange}
+                            selectedYear={userYear}
                         />}
-                    {isDonorGrowthLoading ? 
-                        <ChartSkeleton /> : 
-                        <DonorGrowthChart 
-                        donorGrowthChartData={donorGrowthData?.data} 
-                        onYearChange={handleDonorYearChange} 
-                        selectedYear={donorYear} 
+                    {isDonorGrowthLoading ?
+                        <ChartSkeleton /> :
+                        <DonorGrowthChart
+                            donorGrowthChartData={donorGrowthData?.data}
+                            onYearChange={handleDonorYearChange}
+                            selectedYear={donorYear}
                         />}
-                    {isAudioDistributionLoading ? 
-                        <AudioDistributionChartSkeleton /> : 
-                        <AudioDistributionChart 
-                        audioDistributionChartData={audioDistributionData?.data} 
+                    {isAudioDistributionLoading ?
+                        <AudioDistributionChartSkeleton /> :
+                        <AudioDistributionChart
+                            audioDistributionChartData={audioDistributionData?.data}
                         />}
-                    {isBondOverviewLoading ? 
-                        <ChartSkeleton /> : 
-                        <BondOverview 
-                        bondOverviewData={bondOverviewData?.data} 
-                        onYearChange={handleBondYearChange} 
-                        selectedYear={bondYear} 
+                    {isEarningLoading ?
+                        <ChartSkeleton /> :
+                        <EarningGrowthChart
+                            earningChartData={earningData?.data}
+                            onYearChange={handleEarningYearChange}
+                            selectedYear={earningYear}
                         />}
-                    {isInstitutionOverviewLoading ? 
-                        <ChartSkeleton /> : 
-                        <InstitutionOverview 
-                        institutionOverviewData={institutionOverviewData?.data} 
-                        onYearChange={handleInstitutionYearChange} 
-                        selectedYear={institutionYear} 
+                    {isBondOverviewLoading ?
+                        <ChartSkeleton /> :
+                        <BondOverview
+                            bondOverviewData={bondOverviewData?.data}
+                            onYearChange={handleBondYearChange}
+                            selectedYear={bondYear}
+                        />}
+                    {isInstitutionOverviewLoading ?
+                        <ChartSkeleton /> :
+                        <InstitutionOverview
+                            institutionOverviewData={institutionOverviewData?.data}
+                            onYearChange={handleInstitutionYearChange}
+                            selectedYear={institutionYear}
                         />}
                 </div>
             </PageLayout>
