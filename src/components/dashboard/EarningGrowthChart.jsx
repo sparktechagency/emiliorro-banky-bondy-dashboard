@@ -17,7 +17,7 @@ const earningGrowthData = [
     { month: 'Dec', earnings: 100 },
 ];
 
-const EarningGrowthChart = () => {
+const EarningGrowthChart = ({earningGrowthData}) => {
     return (
         <div className="bg-card p-6 rounded-lg shadow-lg">
             <div className="flex justify-between items-center mb-4">

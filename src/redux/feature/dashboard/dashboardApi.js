@@ -14,27 +14,30 @@ const dashboardApi = baseApi.injectEndpoints({
 
         // GET DASHBOARD USER CHART
         getDashboardUserChart: builder.query({
-            query: () => ({
+            query: ({ year } = {}) => ({
                 url: "/meta/user-chart-data",
                 method: "GET",
+                params: year ? { year } : {}
             }),
             providesTags: ["DASHBOARD"],
         }),
 
         // GET DASHBOARD DONOR CHART
         getDashboardDonorChart: builder.query({
-            query: () => ({
+            query: ({ year } = {}) => ({
                 url: "/meta/donor-chart-data",
                 method: "GET",
+                params: year ? { year } : {}
             }),
             providesTags: ["DASHBOARD"],
         }),
 
         // GET DASHBOARD BOND CHART
         getDashboardBondChart: builder.query({
-            query: () => ({
+            query: ({ year } = {}) => ({
                 url: "/meta/bond-chart-data",
                 method: "GET",
+                params: year ? { year } : {}
             }),
             providesTags: ["DASHBOARD"],
         }),
@@ -42,9 +45,10 @@ const dashboardApi = baseApi.injectEndpoints({
 
         // GET DASHBOARD INSTITUTION CHART
         getDashboardInstitutionChart: builder.query({
-            query: () => ({
+            query: ({ year } = {}) => ({
                 url: "/meta/institution-chart-data",
                 method: "GET",
+                params: year ? { year } : {}
             }),
             providesTags: ["DASHBOARD"],
         }),
