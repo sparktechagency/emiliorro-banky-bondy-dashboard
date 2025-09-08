@@ -3,8 +3,8 @@ import { setAccessToken, setAdmin } from './auth/authSlice'
 
 const rawBaseQuery = fetchBaseQuery({
     // baseUrl: 'http://10.10.20.70:4000',
-    // baseUrl: 'http://10.10.20.9:4000',
-    baseUrl: 'http://192.168.0.103:4000',
+    baseUrl: 'http://10.10.20.9:4000',
+    // baseUrl: 'http://192.168.0.103:4000',
     prepareHeaders: (headers, { getState }) => {
         const token = getState()?.auth.accessToken;
 
@@ -38,6 +38,6 @@ export const baseApi = createApi({
     reducerPath: 'baseApi',
     baseQuery,
 
-    tagTypes: ['USER', "PROFILE", 'TOPIC', 'ADMIN', 'REPORT', 'LEGAL'],
+    tagTypes: ['USER', "PROFILE", 'TOPIC', 'ADMIN', 'REPORT', 'LEGAL', 'DASHBOARD'],
     endpoints: () => ({})
 })
