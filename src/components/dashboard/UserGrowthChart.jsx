@@ -1,20 +1,19 @@
-
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const UserGrowthChart = ({userGrowthChartData, onYearChange}) => {
+const UserGrowthChart = ({userGrowthChartData, onYearChange, selectedYear}) => {
     const { chartData = [], yearsDropdown = [], } = userGrowthChartData || {};
     return (
         <div className="bg-card p-6 rounded-lg shadow-lg">
             <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-semibold">User Growth</h2>
-                <Select onValueChange={onYearChange} defaultValue={yearsDropdown?.[0]}>
+                <Select onValueChange={onYearChange} value={selectedYear?.toString()}>
                     <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="Year" />
                     </SelectTrigger>
                     <SelectContent>
                         {yearsDropdown?.map((year) => (
-                            <SelectItem key={year} value={year}>{year}</SelectItem>
+                            <SelectItem key={year} value={year.toString()}>{year}</SelectItem>
                         ))}
                     </SelectContent>
                 </Select>

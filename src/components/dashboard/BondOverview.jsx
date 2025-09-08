@@ -1,19 +1,20 @@
+
 import { Line, LineChart, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const BondOverview = ({bondOverviewData, onYearChange}) => {
+const BondOverview = ({ bondOverviewData, onYearChange, selectedYear }) => {
     const { chartData = [], yearsDropdown = [], ...stats } = bondOverviewData || {};
     return (
         <div className="bg-card p-6 rounded-lg shadow-lg">
             <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-semibold">Bond Overview</h2>
-                <Select onValueChange={onYearChange} defaultValue={yearsDropdown?.[0]?.toString()}>
+                <Select onValueChange={onYearChange} value={selectedYear?.toString()}>
                     <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="Year" />
                     </SelectTrigger>
                     <SelectContent>
                         {yearsDropdown?.map((year) => (
-                            <SelectItem key={year} value={year}>{year}</SelectItem>
+                            <SelectItem key={year} value={year.toString()}>{year}</SelectItem>
                         ))}
                     </SelectContent>
                 </Select>
@@ -40,13 +41,13 @@ const BondOverview = ({bondOverviewData, onYearChange}) => {
                 <LineChart data={chartData}>
                     <CartesianGrid horizontal={false} vertical={false} strokeDasharray="1 1" />
                     <XAxis dataKey="month" axisLine={true} tickLine={false} />
-                    <YAxis axisLine={true} tickLine={false}/>
+                    <YAxis axisLine={true} tickLine={false} />
                     <Tooltip />
                     <Legend />
-                    <Line type="monotone" dataKey="total" stroke="#8884d8" />
-                    <Line type="monotone" dataKey="completed" stroke="#82ca9d" />
-                    <Line type="monotone" dataKey="incomplete" stroke="#82ca9d" />
-                    <Line type="monotone" dataKey="ongoing" stroke="#82ca9d" />
+                    <Line type="monotone" dataKey="total" stroke="#6366f1" />
+                    <Line type="monotone" dataKey="completed" stroke="#10b981" />
+                    <Line type="monotone" dataKey="incomplete" stroke="#f43f5e" />
+                    <Line type="monotone" dataKey="ongoing" stroke="#f59e0b" />
                 </LineChart>
             </ResponsiveContainer>
         </div>

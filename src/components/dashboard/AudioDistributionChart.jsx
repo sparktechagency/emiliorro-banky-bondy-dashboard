@@ -7,9 +7,9 @@ const AudioDistributionChart = ({ audioDistributionChartData }) => {
     const { shortAudioCount = 0, longAudioCount = 0, totalCount = 0 } = audioDistributionChartData || {};
     
     const chartData = [
+        { name: 'Total Audio', value: totalCount, percentage: totalCount > 0 ? Math.round((totalCount / totalCount) * 100) : 0 },
         { name: 'Short Duration Audio', value: shortAudioCount, percentage: totalCount > 0 ? Math.round((shortAudioCount / totalCount) * 100) : 0 },
         { name: 'Long Duration Audio', value: longAudioCount, percentage: totalCount > 0 ? Math.round((longAudioCount / totalCount) * 100) : 0 },
-        { name: 'Total Audio', value: totalCount, percentage: totalCount > 0 ? Math.round((totalCount / totalCount) * 100) : 0 },
     ];
     return (
         <div className="bg-card p-6 rounded-lg shadow-lg">
