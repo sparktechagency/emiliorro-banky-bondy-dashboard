@@ -33,13 +33,13 @@ const Topbar = ({ onMenuClick }) => {
                 <Menu />
             </Button>
             <div className="flex items-center space-x-5 pr-2">
-                <Link to="notifications" className="relative cursor-pointer hidden lg:block">
+                {/* <Link to="notifications" className="relative cursor-pointer hidden lg:block">
                     <span className="absolute -top-1 -right-1 flex h-3 w-3">
                         <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
                     </span>
                     <Bell />
-                </Link>
+                </Link> */}
                 {/* Theme Toggle */}
                 <Toggle
                     variant="outline"

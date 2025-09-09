@@ -14,7 +14,7 @@ const Donors = lazy(()=> import('@/app/pages/donors/Donors'));
 const Skills = lazy(()=> import('@/app/pages/skills/Skills'));
 const AudioTopic = lazy(()=> import('@/app/pages/audio-topic/AudioTopic'));
 const Report = lazy(()=> import('@/app/pages/report/Report'));
-const Notification = lazy(()=> import('@/app/pages/notifications/Notification'));
+// const Notification = lazy(()=> import('@/app/pages/notifications/Notification'));
 const Profile = lazy(()=> import('@/app/pages/settings/profile/Profile'));
 const Privacy = lazy(()=> import('@/app/pages/settings/privacy/Privacy'));
 const Terms = lazy(()=> import('@/app/pages/settings/terms/Terms'));
@@ -53,10 +53,10 @@ export const router = createBrowserRouter([
                 path: "make-admin",
                 element: <MakeAdmin />
             },
-            {
-                path: "notifications",
-                element: <Notification />
-            },
+            // {
+            //     path: "notifications",
+            //     element: <Notification />
+            // },
             {
                 path: "settings/profile",
                 element: <Profile />
