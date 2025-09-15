@@ -9,6 +9,8 @@ import DonorsTable from "@/components/users/table/DonorsTable";
 import TableSkeleton from "@/components/skeleton/TableSkeleton";
 const UserDetailsModal = lazy(() => import("@/components/users/modal/UserDetailsModal"));
 import usePaginatedSearchQuery from "@/hooks/usePaginatedSearchQuery";
+import Error from "@/components/common/Error";
+import NoData from "@/components/common/NoData";
 
 const Donors = () => {
     const {
@@ -20,6 +22,7 @@ const Donors = () => {
         totalPages,
         page,
         isLoading,
+        isError,
     } = usePaginatedSearchQuery(useGetAllDonorQuery);
 
     const [selectedDonor, setSelectedDonor] = useState(null);
@@ -60,7 +63,9 @@ const Donors = () => {
                 {/* Table */}
                 {isLoading ? (
                     <TableSkeleton />
-                ) : (
+                ) : isError ? (
+                    <Error />
+                ) : donors?.length > 0 ? (
                     <DonorsTable
                         donors={donors}
                         page={page}
@@ -70,6 +75,8 @@ const Donors = () => {
                             setIsDetailsOpen(true);
                         }}
                     />
+                ) : (
+                    <NoData />
                 )}
             </PageLayout>
 

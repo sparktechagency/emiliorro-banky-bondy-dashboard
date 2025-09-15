@@ -13,6 +13,8 @@ import ConfirmationModal from "@/components/common/ConfirmationModal";
 import EditAdminModal from "@/components/admin/modal/EditAdminModal";
 import { ErrorToast, SuccessToast } from "@/lib/utils";
 import usePaginatedSearchQuery from "@/hooks/usePaginatedSearchQuery";
+import Error from "@/components/common/Error";
+import NoData from "@/components/common/NoData";
 
 const MakeAdmin = () => {
   const {
@@ -24,6 +26,7 @@ const MakeAdmin = () => {
           totalPages,
           page,
           isLoading,
+          isError,
         } = usePaginatedSearchQuery(useGetAllAdminQuery);
 
   const [selectedAdmin, setSelectedAdmin] = useState(null);
@@ -114,7 +117,9 @@ const MakeAdmin = () => {
         {
           isLoading ? (
             <TableSkeleton />
-          ) : (
+          ) : isError ? (
+            <Error />
+          ) : admins?.length > 0 ? (
             <AdminTable
               admins={admins}
               page={page}
@@ -130,6 +135,8 @@ const MakeAdmin = () => {
                 setConfirmOpen(true);
               }}
             />
+          ) : (
+            <NoData />
           )
         }
       </PageLayout>

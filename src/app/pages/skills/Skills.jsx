@@ -20,6 +20,8 @@ import EditSkillModal from "@/components/skill/modal/EditSkillModal";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 import { ErrorToast, SuccessToast } from "@/lib/utils";
 import usePaginatedSearchQuery from "@/hooks/usePaginatedSearchQuery";
+import Error from "@/components/common/Error";
+import NoData from "@/components/common/NoData";
 
 const Skills = () => {
   const {
@@ -31,6 +33,7 @@ const Skills = () => {
     totalPages,
     page,
     isLoading,
+    isError,
   } = usePaginatedSearchQuery(useGetAllSkillQuery);
 
   // Modal & Mutation state
@@ -120,7 +123,9 @@ const Skills = () => {
         {/* Table */}
         {isLoading ? (
           <TableSkeleton columns={3} rows={10} />
-        ) : (
+        ) : isError ? (
+          <Error />
+        ) : skills?.length > 0 ? (
           <SkillTable
             skills={skills}
             page={page}
@@ -136,6 +141,8 @@ const Skills = () => {
             updateLoading={updateLoading}
             deleteLoading={deleteLoading}
           />
+        ) : (
+          <NoData />
         )}
       </PageLayout>
 

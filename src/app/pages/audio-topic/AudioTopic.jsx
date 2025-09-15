@@ -19,6 +19,8 @@ import {
     useUpdateTopicMutation,
 } from '@/redux/feature/topic/topicApi';
 import usePaginatedSearchQuery from '@/hooks/usePaginatedSearchQuery';
+import Error from '@/components/common/Error';
+import NoData from '@/components/common/NoData';
 
 const AudioTopic = () => {
     const {
@@ -30,6 +32,7 @@ const AudioTopic = () => {
         totalPages,
         page,
         isLoading,
+        isError
     } = usePaginatedSearchQuery(useGetAllTopicQuery);
 
     const [addOpen, setAddOpen] = useState(false);
@@ -126,7 +129,9 @@ const AudioTopic = () => {
                     {/* Table */}
                     {isLoading ? (
                         <TableSkeleton columns={4} rows={10} />
-                    ) : (
+                    ) : isError ? (
+                        <Error />
+                    ) : topics?.length > 0 ? (
                         <TopicTable
                             page={page}
                             limit={10}
@@ -140,6 +145,8 @@ const AudioTopic = () => {
                                 setConfirmOpen(true);
                             }}
                         />
+                    ) : (
+                        <NoData />
                     )}
                 </PageLayout>
             </Suspense>

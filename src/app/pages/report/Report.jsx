@@ -10,6 +10,8 @@ import TableSkeleton from "@/components/skeleton/TableSkeleton";
 import { ErrorToast, SuccessToast } from "@/lib/utils";
 import ConfirmationModal from "@/components/common/ConfirmationModal";
 import usePaginatedSearchQuery from "@/hooks/usePaginatedSearchQuery";
+import Error from "@/components/common/Error";
+import NoData from "@/components/common/NoData";
 const Report = () => {
   const {
     searchTerm,
@@ -20,6 +22,7 @@ const Report = () => {
     totalPages,
     page,
     isLoading,
+    isError,
   } = usePaginatedSearchQuery(useGetAllReportQuery);
 
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -72,7 +75,9 @@ const Report = () => {
         {
           isLoading ? (
             <TableSkeleton />
-          ) : (
+          ) : isError ? (
+            <Error />
+          ) : reports?.length > 0 ? (
             <ReportTable
               reports={reports}
               page={page}
@@ -83,6 +88,8 @@ const Report = () => {
                 setSelectedReport(report);
               }}
             />
+          ) : (
+            <NoData />
           )
         }
       </PageLayout>

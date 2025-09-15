@@ -12,6 +12,8 @@ import ConfirmationModal from "@/components/common/ConfirmationModal";
 import { useGetAllSkillQuery } from "@/redux/feature/skill/skillApi";
 import { ErrorToast, SuccessToast } from "@/lib/utils";
 import usePaginatedSearchQuery from "@/hooks/usePaginatedSearchQuery";
+import NoData from "@/components/common/NoData";
+import Error from "@/components/common/Error";
 
 const Users = () => {
     const {
@@ -22,8 +24,9 @@ const Users = () => {
         items: users,
         totalPages,
         page,
-        isLoading,
-      } = usePaginatedSearchQuery(useGetAllUserQuery);
+        isLoading: usersLoading,
+        isError: usersError,
+    } = usePaginatedSearchQuery(useGetAllUserQuery);
 
     const [selectedUser, setSelectedUser] = useState(null);
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
@@ -76,9 +79,11 @@ const Users = () => {
                     </div>
                 </div>
                 {/* Table */}
-                {isLoading ? (
+                {usersLoading ? (
                     <TableSkeleton />
-                ) : (
+                ) : usersError ? (
+                    <Error />
+                ) : users?.length > 0 ? (
                     <UsersTable
                         users={users}
                         page={page}
@@ -93,6 +98,8 @@ const Users = () => {
                             setIsDetailsOpen(true);
                         }}
                     />
+                ) : (
+                    <NoData />
                 )}
             </PageLayout>
 
@@ -104,6 +111,7 @@ const Users = () => {
                 skills={skills}
             />
 
+            {/* Confirmation Modal */}
             <ConfirmationModal
                 isOpen={confirmOpen}
                 onOpenChange={setConfirmOpen}
