@@ -76,7 +76,7 @@ const Report = () => {
           isLoading ? (
             <TableSkeleton />
           ) : isError ? (
-            <Error />
+            <Error msg="Failed to load reports"/>
           ) : reports?.length > 0 ? (
             <ReportTable
               reports={reports}
@@ -89,7 +89,7 @@ const Report = () => {
               }}
             />
           ) : (
-            <NoData />
+            <NoData msg="No reports found"/>
           )
         }
       </PageLayout>

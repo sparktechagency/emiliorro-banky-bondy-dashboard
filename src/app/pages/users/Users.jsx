@@ -82,7 +82,7 @@ const Users = () => {
                 {usersLoading ? (
                     <TableSkeleton />
                 ) : usersError ? (
-                    <Error />
+                    <Error msg="Failed to load users"/>
                 ) : users?.length > 0 ? (
                     <UsersTable
                         users={users}
@@ -99,7 +99,7 @@ const Users = () => {
                         }}
                     />
                 ) : (
-                    <NoData />
+                    <NoData msg="No users found"/>
                 )}
             </PageLayout>
 

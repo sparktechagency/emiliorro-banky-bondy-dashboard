@@ -11,10 +11,12 @@ import {
     TabsContent,
 } from "@/components/ui/tabs";
 import Title from "@/components/ui/Title";
+import { useGetAdminProfileQuery } from "@/redux/feature/auth/authApi";
 
 const Profile = () => {
     const [pendingImage, setPendingImage] = useState(null);
     const [previewUrl, setPreviewUrl] = useState(null);
+    const { isLoading, isError } = useGetAdminProfileQuery();
 
     return (
         <Suspense fallback={<div className="flex items-center justify-center h-64">Loading Profile...</div>}>
@@ -30,6 +32,8 @@ const Profile = () => {
                         <ProfileSummary
                             pendingImage={pendingImage}
                             previewUrl={previewUrl}
+                            isLoading={isLoading}
+                            isError={isError}
                             onSelectImage={(file, preview) => {
                                 setPendingImage(file);
                                 setPreviewUrl(preview);
@@ -57,6 +61,8 @@ const Profile = () => {
                                     <TabsContent value="profile">
                                         <EditProfileForm
                                             pendingImage={pendingImage}
+                                            isLoading={isLoading}
+                                            isError={isError}
                                             onClearPending={() => {
                                                 if (previewUrl) URL.revokeObjectURL(previewUrl);
                                                 setPendingImage(null);

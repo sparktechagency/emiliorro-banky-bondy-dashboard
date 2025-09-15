@@ -118,7 +118,7 @@ const MakeAdmin = () => {
           isLoading ? (
             <TableSkeleton />
           ) : isError ? (
-            <Error />
+            <Error msg="Failed to load admins"/>
           ) : admins?.length > 0 ? (
             <AdminTable
               admins={admins}
@@ -136,7 +136,7 @@ const MakeAdmin = () => {
               }}
             />
           ) : (
-            <NoData />
+            <NoData msg="No admins found"/>
           )
         }
       </PageLayout>

@@ -130,7 +130,7 @@ const AudioTopic = () => {
                     {isLoading ? (
                         <TableSkeleton columns={4} rows={10} />
                     ) : isError ? (
-                        <Error />
+                        <Error msg="Failed to load topics"/>
                     ) : topics?.length > 0 ? (
                         <TopicTable
                             page={page}
@@ -146,7 +146,7 @@ const AudioTopic = () => {
                             }}
                         />
                     ) : (
-                        <NoData />
+                        <NoData msg="No topics found"/>
                     )}
                 </PageLayout>
             </Suspense>

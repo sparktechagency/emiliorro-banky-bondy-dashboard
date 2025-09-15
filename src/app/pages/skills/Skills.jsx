@@ -124,7 +124,7 @@ const Skills = () => {
         {isLoading ? (
           <TableSkeleton columns={3} rows={10} />
         ) : isError ? (
-          <Error />
+          <Error msg="Failed to load skills"/>
         ) : skills?.length > 0 ? (
           <SkillTable
             skills={skills}
@@ -142,7 +142,7 @@ const Skills = () => {
             deleteLoading={deleteLoading}
           />
         ) : (
-          <NoData />
+          <NoData msg="No skills found"/>
         )}
       </PageLayout>
 

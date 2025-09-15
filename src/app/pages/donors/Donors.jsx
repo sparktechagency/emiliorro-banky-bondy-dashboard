@@ -64,7 +64,7 @@ const Donors = () => {
                 {isLoading ? (
                     <TableSkeleton />
                 ) : isError ? (
-                    <Error />
+                    <Error msg="Failed to load donors"/>
                 ) : donors?.length > 0 ? (
                     <DonorsTable
                         donors={donors}
@@ -76,7 +76,7 @@ const Donors = () => {
                         }}
                     />
                 ) : (
-                    <NoData />
+                    <NoData msg="No donors found"/>
                 )}
             </PageLayout>
 
