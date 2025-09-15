@@ -87,7 +87,7 @@ const Dashboard = () => {
                     {isEarningLoading ?
                         <ChartSkeleton /> :
                         <EarningGrowthChart
-                            earningChartData={earningData?.data}
+                            earningGrowthChartData={earningData?.data}
                             onYearChange={handleEarningYearChange}
                             selectedYear={earningYear}
                         />}
