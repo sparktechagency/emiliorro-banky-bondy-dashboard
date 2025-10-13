@@ -2,10 +2,6 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { setAccessToken, setAdmin } from './auth/authSlice';
 
 const rawBaseQuery = fetchBaseQuery({
-    // baseUrl: 'http://10.10.20.70:4000',
-    // baseUrl: 'http://10.10.20.9:4000',
-    // baseUrl: 'http://192.168.0.103:4000',
-    // baseUrl: 'https://rnj64vmh-4000.inc1.devtunnels.ms',
     baseUrl: 'https://api.bankybondy.com',
 
     prepareHeaders: (headers, { getState }) => {
