@@ -17,7 +17,7 @@ export default function usePaginatedSearchQuery(queryHook, { limit = 10, debounc
 
   // Extract data safely
   const items = data?.data?.result || [];
-  const totalPages = data?.data?.meta?.totalPage || 1;
+  const totalPages = data?.data?.meta?.totalPages || 1;
   const page = data?.data?.meta?.page || 1;
 
   return {
