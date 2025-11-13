@@ -1,28 +1,23 @@
-import { lazy, Suspense, useMemo } from "react";
+import { lazy, Suspense, useMemo, useEffect, useState, useRef } from "react";
 import Title from "@/components/ui/Title";
 import PageLayout from "@/components/main-layout/PageLayout";
-import JoditEditor from "jodit-react";
-import { useEffect, useState, useRef } from "react";
 import { useAddPrivacyPolicyMutation, useGetPrivacyPolicyQuery } from "@/redux/feature/legal/legalApi";
 import { SuccessToast } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/theme/theme-provider";
-const LegalSkeleton = lazy(()=> import('@/components/legal/LegalSkeleton'));
+const LegalSkeleton = lazy(() => import('@/components/legal/LegalSkeleton'));
+const JoditEditorLazy = lazy(() => import("jodit-react"));
 
 const Privacy = () => {
     const [content, setContent] = useState("");
     const editor = useRef(null);
     const { theme } = useTheme();
-    const [isLoading, setIsLoading] = useState(true);
 
     const { data: privacyPolicy, isLoading: privacyPolicyLoading } = useGetPrivacyPolicyQuery();
-
     const [addPrivacyPolicy, { isLoading: addPrivacyPolicyLoading }] = useAddPrivacyPolicyMutation();
-
     useEffect(() => {
-        if (!privacyPolicyLoading) {
-            setContent(privacyPolicy?.data?.description || "");
-            setIsLoading(false);
+        if (!privacyPolicyLoading && privacyPolicy?.data?.description !== undefined) {
+            setContent(privacyPolicy.data.description || "");
         }
     }, [privacyPolicy, privacyPolicyLoading]);
 
@@ -52,17 +47,20 @@ const Privacy = () => {
             buttons: ['bold', 'italic', 'underline', '|', 'ul', 'ol', '|', 'font', 'fontsize', 'brush', 'paragraph', '|', 'link', 'table', '|', 'undo', 'redo', '|', 'hr', 'eraser', 'fullsize'],
         };
     }, [theme]);
+    
+    const isComponentLoading = privacyPolicyLoading || !privacyPolicy; 
 
     return (
         <Suspense fallback={<LegalSkeleton />}>
             <PageLayout
                 pagination={
                     <>
-                        {!isLoading && (
+                        {!isComponentLoading && (
                             <Button
                                 disabled={addPrivacyPolicyLoading}
                                 loading={addPrivacyPolicyLoading} className="w-24 mx-auto mt-4"
-                                onClick={handleSubmit}>
+                                onClick={handleSubmit}
+                            >
                                 Save
                             </Button>
                         )}
@@ -71,11 +69,11 @@ const Privacy = () => {
             >
                 <Title title="Privacy Policy" />
 
-                {isLoading ? (
+                {isComponentLoading ? (
                     <LegalSkeleton />
                 ) : (
                     <div className="rounded-lg shadow p-4">
-                        <JoditEditor
+                        <JoditEditorLazy
                             ref={editor}
                             value={content}
                             onBlur={(newContent) => setContent(newContent)}

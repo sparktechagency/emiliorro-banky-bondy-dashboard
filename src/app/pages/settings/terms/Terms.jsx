@@ -1,28 +1,24 @@
-import { lazy, Suspense, useMemo } from "react";
+import { lazy, Suspense, useMemo, useEffect, useState, useRef } from "react";
 import Title from "@/components/ui/Title";
 import PageLayout from "@/components/main-layout/PageLayout";
-import JoditEditor from "jodit-react";
-import { useEffect, useState, useRef } from "react";
 import { useAddTermsMutation, useGetTermsQuery } from "@/redux/feature/legal/legalApi";
 import { SuccessToast } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/theme/theme-provider";
-const LegalSkeleton = lazy(()=> import('@/components/legal/LegalSkeleton'));
+
+const LegalSkeleton = lazy(() => import('@/components/legal/LegalSkeleton'));
+const JoditEditorLazy = lazy(() => import("jodit-react"));
 
 const Terms = () => {
     const [content, setContent] = useState("");
     const editor = useRef(null);
     const { theme } = useTheme();
-    const [isLoading, setIsLoading] = useState(true);
 
     const { data: terms, isLoading: termsLoading } = useGetTermsQuery();
-
     const [addTerms, { isLoading: addTermsLoading }] = useAddTermsMutation();
-
     useEffect(() => {
-        if (!termsLoading) {
-            setContent(terms?.data?.description || "");
-            setIsLoading(false);
+        if (!termsLoading && terms?.data?.description !== undefined) {
+            setContent(terms.data.description || "");
         }
     }, [terms, termsLoading]);
 
@@ -53,16 +49,19 @@ const Terms = () => {
         };
     }, [theme]);
 
+    const isComponentLoading = termsLoading || !terms; 
+
     return (
         <Suspense fallback={<LegalSkeleton />}>
             <PageLayout
                 pagination={
                     <>
-                        {!isLoading && (
+                        {!isComponentLoading && (
                             <Button
                                 disabled={addTermsLoading}
                                 loading={addTermsLoading} className="w-24 mx-auto mt-4"
-                                onClick={handleSubmit}>
+                                onClick={handleSubmit}
+                            >
                                 Save
                             </Button>
                         )}
@@ -71,11 +70,11 @@ const Terms = () => {
             >
                 <Title title="Terms" />
 
-                {isLoading ? (
+                {isComponentLoading ? (
                     <LegalSkeleton />
                 ) : (
                     <div className="rounded-lg shadow p-4">
-                        <JoditEditor
+                        <JoditEditorLazy
                             ref={editor}
                             value={content}
                             onBlur={(newContent) => setContent(newContent)}

@@ -1,29 +1,25 @@
-import { lazy, Suspense, useMemo } from "react";
+import { lazy, Suspense, useMemo, useEffect, useState, useRef } from "react";
 import Title from "@/components/ui/Title";
 import PageLayout from "@/components/main-layout/PageLayout";
-import JoditEditor from "jodit-react";
-import { useEffect, useState, useRef } from "react";
 import { useAddAboutMutation, useGetAboutQuery } from "@/redux/feature/legal/legalApi";
 import { SuccessToast } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/theme/theme-provider";
-const LegalSkeleton = lazy(()=> import('@/components/legal/LegalSkeleton'));
+const LegalSkeleton = lazy(() => import('@/components/legal/LegalSkeleton'));
+const JoditEditorLazy = lazy(() => import("jodit-react"));
+
 
 const About = () => {
     const [content, setContent] = useState("");
     const editor = useRef(null);
     const { theme } = useTheme();
-    const [isLoading, setIsLoading] = useState(true);
 
     const { data: about, isLoading: aboutLoading } = useGetAboutQuery();
-    console.log(about);
 
     const [addAbout, { isLoading: addAboutLoading }] = useAddAboutMutation();
-
     useEffect(() => {
-        if (!aboutLoading) {
-            setContent(about?.data?.description || "");
-            setIsLoading(false);
+        if (!aboutLoading && about?.data?.description !== undefined) {
+            setContent(about.data.description || "");
         }
     }, [about, aboutLoading]);
 
@@ -49,21 +45,24 @@ const About = () => {
             showWordsCounter: true,
             showXPathInStatusbar: false,
             placeholder: "Write your About here...",
-            theme: currentTheme,
+            theme: currentTheme, // dynamic theme setting
             buttons: ['bold', 'italic', 'underline', '|', 'ul', 'ol', '|', 'font', 'fontsize', 'brush', 'paragraph', '|', 'link', 'table', '|', 'undo', 'redo', '|', 'hr', 'eraser', 'fullsize'],
         };
     }, [theme]);
+
+    const isComponentLoading = aboutLoading || !about; 
 
     return (
         <Suspense fallback={<LegalSkeleton />}>
             <PageLayout
                 pagination={
                     <>
-                        {!isLoading && (
+                        {!isComponentLoading && (
                             <Button
                                 disabled={addAboutLoading}
                                 loading={addAboutLoading} className="w-24 mx-auto mt-4"
-                                onClick={handleSubmit}>
+                                onClick={handleSubmit}
+                            >
                                 Save
                             </Button>
                         )}
@@ -72,11 +71,11 @@ const About = () => {
             >
                 <Title title="About Us" />
 
-                {isLoading ? (
+                {isComponentLoading ? (
                     <LegalSkeleton />
                 ) : (
                     <div className="rounded-lg shadow p-4">
-                        <JoditEditor
+                        <JoditEditorLazy 
                             ref={editor}
                             value={content}
                             onBlur={(newContent) => setContent(newContent)}
